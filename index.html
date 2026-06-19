@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CERP Interview Preparation 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d0f14;
+    --surface: #161921;
+    --surface2: #1e2230;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.14);
+    --accent: #4ade80;
+    --accent2: #22d3ee;
+    --accent3: #f59e0b;
+    --text: #e8eaf0;
+    --muted: #8892a4;
+    --dim: #4a5568;
+    --pill-intro: rgba(74,222,128,0.12);   --pill-intro-t: #4ade80;
+    --pill-project: rgba(34,211,238,0.12); --pill-project-t: #22d3ee;
+    --pill-field: rgba(245,158,11,0.12);   --pill-field-t: #f59e0b;
+    --pill-skills: rgba(167,139,250,0.12); --pill-skills-t: #a78bfa;
+    --pill-scenario: rgba(251,113,133,0.12); --pill-scenario-t: #fb7185;
+    --r: 10px; --r-lg: 14px;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Sora', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.6; }
+
+  /* NAV TABS (top-level sections) */
+  .nav-section { max-width: 860px; margin: 0 auto; padding: 1.25rem 1.5rem 0; display: flex; gap: 8px; border-bottom: 1px solid var(--border); }
+  .nav-btn { padding: 10px 22px; font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 500; border: none; background: transparent; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; }
+  .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .nav-btn:hover:not(.active) { color: var(--text); }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* HEADER */
+  .header { background: linear-gradient(135deg,#0d0f14 0%,#111827 50%,#0d0f14 100%); border-bottom: 1px solid var(--border); padding: 2.5rem 1.5rem 2rem; position: relative; overflow: hidden; }
+  .header::before { content:''; position:absolute; top:-60px; right:-60px; width:280px; height:280px; background:radial-gradient(circle,rgba(74,222,128,0.08) 0%,transparent 70%); pointer-events:none; }
+  .header::after  { content:''; position:absolute; bottom:-40px; left:30%; width:200px; height:200px; background:radial-gradient(circle,rgba(34,211,238,0.06) 0%,transparent 70%); pointer-events:none; }
+  .header-inner { max-width:860px; margin:0 auto; position:relative; z-index:1; }
+  .badge { display:inline-flex; align-items:center; gap:6px; font-family:'Space Mono',monospace; font-size:11px; color:var(--accent); background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.2); padding:4px 12px; border-radius:20px; letter-spacing:0.05em; margin-bottom:1rem; }
+  .badge::before { content:'●'; font-size:8px; }
+  h1 { font-size:clamp(1.6rem,4vw,2.4rem); font-weight:600; color:#fff; line-height:1.2; margin-bottom:0.5rem; }
+  h1 span { color:var(--accent); }
+  .subtitle { font-size:14px; color:var(--muted); margin-bottom:1.5rem; }
+  .meta-row { display:flex; flex-wrap:wrap; gap:10px; }
+  .meta-chip { font-family:'Space Mono',monospace; font-size:11px; color:var(--muted); background:var(--surface); border:1px solid var(--border); padding:5px 12px; border-radius:6px; }
+
+  /* MAIN */
+  .main { max-width:860px; margin:0 auto; padding:1.5rem; }
+
+  /* STATS */
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:1.5rem; }
+  .stat { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:14px 16px; }
+  .stat-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; font-family:'Space Mono',monospace; margin-bottom:6px; }
+  .stat-val { font-size:26px; font-weight:600; color:var(--accent); }
+  #st-pct { color:var(--accent2); }
+
+  /* TABS */
+  .tabs { display:flex; gap:8px; margin-bottom:1.25rem; }
+  .tab { flex:1; padding:11px 16px; border-radius:var(--r); border:1px solid var(--border); background:var(--surface); cursor:pointer; font-size:14px; font-weight:500; color:var(--muted); transition:all 0.2s; font-family:'Sora',sans-serif; text-align:center; }
+  .tab:hover:not(.active) { border-color:var(--border2); color:var(--text); }
+  .tab.active { background:rgba(74,222,128,0.1); border-color:rgba(74,222,128,0.3); color:var(--accent); }
+
+  /* FILTER ROW */
+  .filter-row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:1.25rem; }
+  .search-wrap { flex:1; min-width:180px; }
+  .search-wrap input { width:100%; padding:9px 14px; border-radius:var(--r); border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:14px; font-family:'Sora',sans-serif; outline:none; transition:border-color 0.2s; }
+  .search-wrap input:focus { border-color:var(--border2); }
+  .search-wrap input::placeholder { color:var(--dim); }
+  .filter-btn { padding:7px 14px; border-radius:20px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:12px; font-family:'Sora',sans-serif; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+  .filter-btn:hover { border-color:var(--border2); color:var(--text); }
+  .filter-btn.active { background:var(--surface2); border-color:var(--border2); color:var(--text); }
+
+  /* Q CARDS */
+  .q-list { display:flex; flex-direction:column; gap:8px; }
+  .q-card { border:1px solid var(--border); border-radius:var(--r-lg); background:var(--surface); overflow:hidden; transition:border-color 0.2s; }
+  .q-card:hover { border-color:var(--border2); }
+  .q-card.open { border-color:rgba(74,222,128,0.25); }
+  .q-head { display:flex; align-items:flex-start; gap:12px; padding:14px 16px; cursor:pointer; user-select:none; }
+  .q-num { font-family:'Space Mono',monospace; font-size:11px; color:var(--dim); min-width:28px; padding-top:3px; }
+  .q-text { font-size:14px; font-weight:500; color:var(--text); flex:1; line-height:1.5; }
+  .q-pill { font-size:10px; font-weight:500; padding:3px 10px; border-radius:10px; white-space:nowrap; letter-spacing:0.03em; }
+  .pill-intro   { background:var(--pill-intro);   color:var(--pill-intro-t); }
+  .pill-project { background:var(--pill-project); color:var(--pill-project-t); }
+  .pill-field   { background:var(--pill-field);   color:var(--pill-field-t); }
+  .pill-skills  { background:var(--pill-skills);  color:var(--pill-skills-t); }
+  .pill-scenario{ background:var(--pill-scenario);color:var(--pill-scenario-t); }
+  .q-chevron { width:20px; height:20px; display:flex; align-items:center; justify-content:center; color:var(--dim); transition:transform 0.25s; flex-shrink:0; margin-top:1px; }
+  .q-chevron svg { width:14px; height:14px; }
+  .q-card.open .q-chevron { transform:rotate(180deg); color:var(--accent); }
+  .q-ans { max-height:0; overflow:hidden; transition:max-height 0.35s ease; }
+  .q-ans-inner { padding:0 16px 16px 56px; border-top:1px solid var(--border); }
+  .ans-label { font-family:'Space Mono',monospace; font-size:10px; color:var(--accent); letter-spacing:0.08em; text-transform:uppercase; padding-top:14px; margin-bottom:8px; }
+  .ans-text { font-size:14px; color:var(--muted); line-height:1.75; }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap { height:3px; background:var(--border); border-radius:2px; margin-bottom:1.5rem; overflow:hidden; }
+  .progress-bar-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:2px; transition:width 0.3s ease; width:0%; }
+
+  /* NO RESULTS */
+  .no-results { text-align:center; padding:3rem 1rem; color:var(--dim); font-size:14px; }
+
+  /* ══════════════════════════════
+     MCQ SECTION STYLES
+  ══════════════════════════════ */
+  .mcq-header { margin-bottom:1.5rem; }
+  .mcq-header h2 { font-size:18px; font-weight:600; color:#fff; margin-bottom:4px; }
+  .mcq-header p  { font-size:13px; color:var(--muted); }
+
+  .mcq-controls { display:flex; gap:8px; margin-bottom:1.5rem; align-items:center; flex-wrap:wrap; }
+  .mcq-role-btn { padding:10px 20px; border-radius:var(--r); border:1px solid var(--border); background:var(--surface); cursor:pointer; font-size:14px; font-weight:500; color:var(--muted); transition:all 0.2s; font-family:'Sora',sans-serif; }
+  .mcq-role-btn:hover:not(.active) { border-color:var(--border2); color:var(--text); }
+  .mcq-role-btn.active { background:rgba(245,158,11,0.12); border-color:rgba(245,158,11,0.35); color:var(--accent3); }
+
+  .mcq-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:1.5rem; }
+  .mcq-stat { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:12px 14px; }
+  .mcq-stat-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; font-family:'Space Mono',monospace; margin-bottom:5px; }
+  .mcq-stat-val { font-size:22px; font-weight:600; }
+  .mcq-stat-val.correct { color:#4ade80; }
+  .mcq-stat-val.wrong   { color:#fb7185; }
+  .mcq-stat-val.remain  { color:var(--accent2); }
+  .mcq-stat-val.score   { color:var(--accent3); }
+
+  .mcq-prog-wrap { height:4px; background:var(--border); border-radius:2px; margin-bottom:1.75rem; overflow:hidden; }
+  .mcq-prog-fill { height:100%; background:linear-gradient(90deg,var(--accent3),var(--accent)); border-radius:2px; transition:width 0.4s ease; width:0%; }
+
+  .mcq-list { display:flex; flex-direction:column; gap:14px; }
+
+  .mcq-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:18px 20px; }
+  .mcq-card.answered { border-color:var(--border2); }
+  .mcq-q-row { display:flex; gap:12px; margin-bottom:14px; }
+  .mcq-q-num { font-family:'Space Mono',monospace; font-size:11px; color:var(--accent3); min-width:28px; padding-top:2px; }
+  .mcq-q-text { font-size:14px; font-weight:500; color:var(--text); line-height:1.5; flex:1; }
+
+  .mcq-options { display:flex; flex-direction:column; gap:8px; }
+  .mcq-opt { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; border-radius:var(--r); border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:all 0.18s; font-size:14px; color:var(--muted); line-height:1.5; }
+  .mcq-opt:hover:not(.locked) { border-color:rgba(245,158,11,0.4); color:var(--text); background:rgba(245,158,11,0.05); }
+  .mcq-opt .opt-letter { font-family:'Space Mono',monospace; font-size:11px; font-weight:700; min-width:18px; padding-top:1px; color:var(--dim); }
+
+  /* correct / wrong states */
+  .mcq-opt.correct {
+    background: rgba(74,222,128,0.1);
+    border-color: rgba(74,222,128,0.45);
+    color: #4ade80;
+  }
+  .mcq-opt.correct .opt-letter { color:#4ade80; }
+  .mcq-opt.wrong {
+    background: rgba(251,113,133,0.1);
+    border-color: rgba(251,113,133,0.45);
+    color: #fb7185;
+  }
+  .mcq-opt.wrong .opt-letter { color:#fb7185; }
+  .mcq-opt.locked { cursor:default; }
+
+  .mcq-result-tag { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; margin-top:10px; padding:4px 10px; border-radius:8px; }
+  .mcq-result-tag.ok  { background:rgba(74,222,128,0.12); color:#4ade80; }
+  .mcq-result-tag.bad { background:rgba(251,113,133,0.12); color:#fb7185; }
+
+  .mcq-reset-btn { margin-top:2rem; padding:11px 28px; border-radius:var(--r); border:1px solid rgba(245,158,11,0.3); background:rgba(245,158,11,0.08); color:var(--accent3); font-size:14px; font-weight:500; font-family:'Sora',sans-serif; cursor:pointer; transition:all 0.2s; }
+  .mcq-reset-btn:hover { background:rgba(245,158,11,0.14); border-color:rgba(245,158,11,0.5); }
+
+  /* ══════════════════════════════
+     PROJECT DETAILS SECTION
+  ══════════════════════════════ */
+  .pd-intro-box { background: linear-gradient(135deg, rgba(34,211,238,0.07) 0%, rgba(74,222,128,0.05) 100%); border: 1px solid rgba(34,211,238,0.18); border-radius: var(--r-lg); padding: 22px 24px; margin-bottom: 1.75rem; }
+  .pd-intro-box .pd-org-badge { display:inline-flex; align-items:center; gap:7px; font-family:'Space Mono',monospace; font-size:10px; color:var(--accent2); background:rgba(34,211,238,0.1); border:1px solid rgba(34,211,238,0.2); padding:3px 11px; border-radius:20px; letter-spacing:0.06em; margin-bottom:12px; }
+  .pd-intro-box p { font-size:14px; color:var(--muted); line-height:1.8; }
+  .pd-intro-box p + p { margin-top:10px; }
+
+  .pd-section-title { font-size:11px; font-weight:600; font-family:'Space Mono',monospace; color:var(--accent); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .pd-section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  .pd-objectives { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:10px; margin-bottom:2rem; }
+  .pd-obj-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:14px 16px; display:flex; align-items:flex-start; gap:12px; transition:border-color 0.2s; }
+  .pd-obj-card:hover { border-color:var(--border2); }
+  .pd-obj-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+  .pd-obj-text { font-size:13px; color:var(--muted); line-height:1.5; }
+
+  .pd-activities { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:8px; margin-bottom:2rem; }
+  .pd-act-chip { background:var(--surface2); border:1px solid var(--border); border-radius:var(--r); padding:10px 14px; font-size:13px; color:var(--muted); display:flex; align-items:center; gap:9px; }
+  .pd-act-chip span.dot { width:6px; height:6px; border-radius:50%; background:var(--accent3); flex-shrink:0; }
+
+  .pd-roles-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(360px,1fr)); gap:14px; margin-bottom:2rem; }
+  .pd-role-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; }
+  .pd-role-header { padding:14px 18px 12px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
+  .pd-role-icon { font-size:22px; }
+  .pd-role-title { font-size:15px; font-weight:600; color:#fff; }
+  .pd-role-sub   { font-size:12px; color:var(--muted); margin-top:2px; }
+  .pd-role-body  { padding:14px 18px; }
+  .pd-role-section-lbl { font-family:'Space Mono',monospace; font-size:10px; color:var(--accent3); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:8px; margin-top:12px; }
+  .pd-role-section-lbl:first-child { margin-top:0; }
+  .pd-role-list { list-style:none; padding:0; display:flex; flex-direction:column; gap:5px; }
+  .pd-role-list li { font-size:13px; color:var(--muted); padding-left:16px; position:relative; line-height:1.5; }
+  .pd-role-list li::before { content:'›'; position:absolute; left:2px; color:var(--accent2); font-weight:700; }
+
+  .pd-faq-list { display:flex; flex-direction:column; gap:8px; margin-bottom:2rem; }
+  .pd-faq-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; transition:border-color 0.2s; }
+  .pd-faq-card:hover { border-color:var(--border2); }
+  .pd-faq-card.open { border-color:rgba(34,211,238,0.3); }
+  .pd-faq-head { display:flex; align-items:flex-start; gap:12px; padding:13px 16px; cursor:pointer; user-select:none; }
+  .pd-faq-num { font-family:'Space Mono',monospace; font-size:11px; color:var(--accent2); min-width:26px; padding-top:2px; }
+  .pd-faq-q { font-size:14px; font-weight:500; color:var(--text); flex:1; line-height:1.5; }
+  .pd-faq-chev { width:20px; height:20px; display:flex; align-items:center; justify-content:center; color:var(--dim); transition:transform 0.25s; flex-shrink:0; }
+  .pd-faq-chev svg { width:14px; height:14px; }
+  .pd-faq-card.open .pd-faq-chev { transform:rotate(180deg); color:var(--accent2); }
+  .pd-faq-ans { max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
+  .pd-faq-ans-inner { padding:0 16px 14px 54px; border-top:1px solid var(--border); }
+  .pd-faq-ans-lbl { font-family:'Space Mono',monospace; font-size:10px; color:var(--accent2); text-transform:uppercase; letter-spacing:0.07em; padding-top:12px; margin-bottom:7px; }
+  .pd-faq-ans-text { font-size:14px; color:var(--muted); line-height:1.75; }
+
+  /* FOOTER */
+  .footer { max-width:860px; margin:2rem auto 0; padding:1.5rem; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+  .footer-left  { font-size:12px; color:var(--dim); font-family:'Space Mono',monospace; }
+  .footer-right { font-size:12px; color:var(--dim); }
+
+  @media(max-width:540px){
+    .stats,.mcq-stats{grid-template-columns:1fr 1fr;}
+    .stats .stat:last-child,.mcq-stats .mcq-stat:last-child{grid-column:span 2;}
+    .tabs{flex-direction:column;}
+    .q-ans-inner{padding-left:16px;}
+    .mcq-controls{flex-direction:column;align-items:stretch;}
+    .pd-roles-grid{grid-template-columns:1fr;}
+    .pd-objectives{grid-template-columns:1fr 1fr;}
+    .pd-faq-ans-inner{padding-left:16px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="badge">CERP · LWMC · Lahore 2026</div>
+    <h1>Interview <span>Preparation</span> Guide</h1>
+    <p class="subtitle">100 Q&amp;A answers + 100 MCQ practice questions · Enumerator &amp; Field Supervisor roles</p>
+    <div class="meta-row">
+      <div class="meta-chip">Deadline: 22 May 2026</div>
+      <div class="meta-chip">Start: 8 June 2026</div>
+      <div class="meta-chip">Waste Management Project</div>
+      <div class="meta-chip">Lahore, Pakistan</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOP NAV -->
+<div class="nav-section">
+  <button class="nav-btn active" onclick="showSection('qa')">&#128172; Q&amp;A Answers</button>
+  <button class="nav-btn"        onclick="showSection('mcq')">&#9989; MCQ Practice Quiz</button>
+  <button class="nav-btn"        onclick="showSection('pd')">&#128196; Project Details</button>
+</div>
+
+<!-- ══════════════ Q&A SECTION ══════════════ -->
+<div id="sec-qa" class="section active">
+  <div class="main">
+    <div class="stats">
+      <div class="stat"><div class="stat-label">Total Questions</div><div class="stat-val" id="st-total">50</div></div>
+      <div class="stat"><div class="stat-label">Reviewed</div><div class="stat-val" id="st-ans">0</div></div>
+      <div class="stat"><div class="stat-label">Progress</div><div class="stat-val" id="st-pct">0%</div></div>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-bar"></div></div>
+    <div class="tabs" style="flex-wrap:wrap;">
+      <button class="tab active" onclick="switchRole('enum')">&#128101; Enumerator &nbsp;(50 Q)</button>
+      <button class="tab"        onclick="switchRole('sup')">&#128203; Field Supervisor &nbsp;(50 Q)</button>
+      <button class="tab"        onclick="switchRole('dc')">&#128202; Data Collector &nbsp;(50 Q)</button>
+      <button class="tab"        onclick="switchRole('fa')">&#128736; Field Assistant &nbsp;(50 Q)</button>
+    </div>
+    <div class="filter-row">
+      <div class="search-wrap"><input type="text" id="search-box" placeholder="Search any question or keyword..." oninput="applyFilter()" /></div>
+      <button class="filter-btn active" onclick="setCat('all',this)">All</button>
+      <button class="filter-btn" onclick="setCat('intro',this)">Intro</button>
+      <button class="filter-btn" onclick="setCat('project',this)">Project</button>
+      <button class="filter-btn" onclick="setCat('field',this)">Fieldwork</button>
+      <button class="filter-btn" onclick="setCat('skills',this)">Skills</button>
+      <button class="filter-btn" onclick="setCat('scenario',this)">Scenarios</button>
+    </div>
+    <div class="q-list" id="q-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════ MCQ SECTION ══════════════ -->
+<div id="sec-mcq" class="section">
+  <div class="main">
+    <div class="mcq-header">
+      <h2>MCQ Practice Quiz</h2>
+      <p>Select the best answer. Green = correct, Red = wrong. Track your score below.</p>
+    </div>
+    <div class="mcq-controls">
+      <button class="mcq-role-btn active" onclick="switchMcqRole('enum',this)">&#128101; Enumerator (50 MCQ)</button>
+      <button class="mcq-role-btn"        onclick="switchMcqRole('sup',this)">&#128203; Field Supervisor (50 MCQ)</button>
+      <button class="mcq-role-btn"        onclick="switchMcqRole('dc',this)">&#128202; Data Collector (50 MCQ)</button>
+      <button class="mcq-role-btn"        onclick="switchMcqRole('fa',this)">&#128736; Field Assistant (50 MCQ)</button>
+      <button class="mcq-reset-btn" onclick="resetMcq()">&#8635; Reset Quiz</button>
+    </div>
+    <div class="mcq-stats">
+      <div class="mcq-stat"><div class="mcq-stat-label">Total</div><div class="mcq-stat-val score" id="mst-total">50</div></div>
+      <div class="mcq-stat"><div class="mcq-stat-label">Correct</div><div class="mcq-stat-val correct" id="mst-correct">0</div></div>
+      <div class="mcq-stat"><div class="mcq-stat-label">Wrong</div><div class="mcq-stat-val wrong" id="mst-wrong">0</div></div>
+      <div class="mcq-stat"><div class="mcq-stat-label">Score</div><div class="mcq-stat-val remain" id="mst-score">0%</div></div>
+    </div>
+    <div class="mcq-prog-wrap"><div class="mcq-prog-fill" id="mcq-prog"></div></div>
+    <div class="mcq-list" id="mcq-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════ PROJECT DETAILS SECTION ══════════════ -->
+<div id="sec-pd" class="section">
+  <div class="main">
+
+    <!-- Intro Box -->
+    <div class="pd-intro-box">
+      <div class="pd-org-badge">&#128197; CERP SWM PROJECT · LAHORE 2026</div>
+      <p>The <strong style="color:var(--text)">CERP SWM Project</strong> (Solid Waste Management Project) is a research-based field project conducted by the <strong style="color:var(--text)">Centre for Economic Research in Pakistan (CERP)</strong> in collaboration with the <strong style="color:var(--text)">Lahore Waste Management Company (LWMC)</strong>.</p>
+      <p>The purpose of this project is to study and improve the waste management and recycling system in Lahore. Researchers collect information from households, waste collectors, recycling agents, and community members to identify problems and suggest better solutions for urban cleanliness and waste management.</p>
+    </div>
+
+    <!-- Main Objectives -->
+    <div class="pd-section-title">Main Objectives of the Project</div>
+    <div class="pd-objectives">
+      <div class="pd-obj-card"><span class="pd-obj-icon">&#9851;</span><span class="pd-obj-text">Improve waste collection systems across Lahore</span></div>
+      <div class="pd-obj-card"><span class="pd-obj-icon">&#9855;</span><span class="pd-obj-text">Study recycling practices and their efficiency</span></div>
+      <div class="pd-obj-card"><span class="pd-obj-icon">&#128101;</span><span class="pd-obj-text">Understand public behaviour regarding cleanliness</span></div>
+      <div class="pd-obj-card"><span class="pd-obj-icon">&#128203;</span><span class="pd-obj-text">Improve coordination between public and private waste workers</span></div>
+      <div class="pd-obj-card"><span class="pd-obj-icon">&#128202;</span><span class="pd-obj-text">Collect accurate field data for research and policy-making</span></div>
+      <div class="pd-obj-card"><span class="pd-obj-icon">&#128270;</span><span class="pd-obj-text">Support evidence-based decision-making for urban management</span></div>
+    </div>
+
+    <!-- Field Activities -->
+    <div class="pd-section-title">Field Activities in the Project</div>
+    <div class="pd-activities">
+      <div class="pd-act-chip"><span class="dot"></span>Household surveys</div>
+      <div class="pd-act-chip"><span class="dot"></span>Interviews with community members</div>
+      <div class="pd-act-chip"><span class="dot"></span>Observation of waste collection points</div>
+      <div class="pd-act-chip"><span class="dot"></span>Monitoring waste management activities</div>
+      <div class="pd-act-chip"><span class="dot"></span>Data collection using tablets / mobile apps</div>
+      <div class="pd-act-chip"><span class="dot"></span>Reporting and documentation</div>
+      <div class="pd-act-chip"><span class="dot"></span>Team coordination and supervision</div>
+    </div>
+
+    <!-- Roles -->
+    <div class="pd-section-title">Job Roles &amp; Responsibilities</div>
+    <div class="pd-roles-grid">
+
+      <!-- Enumerator -->
+      <div class="pd-role-card">
+        <div class="pd-role-header">
+          <span class="pd-role-icon">&#128101;</span>
+          <div><div class="pd-role-title">Enumerator</div><div class="pd-role-sub">Field data collection through surveys &amp; interviews</div></div>
+        </div>
+        <div class="pd-role-body">
+          <div class="pd-role-section-lbl">Responsibilities</div>
+          <ul class="pd-role-list">
+            <li>Conduct household surveys and interviews</li>
+            <li>Ask questions clearly and politely</li>
+            <li>Record answers accurately on forms or devices</li>
+            <li>Use mobile / tablet apps for data entry</li>
+            <li>Visit assigned field locations on time</li>
+            <li>Maintain confidentiality of respondents</li>
+            <li>Submit completed surveys daily</li>
+            <li>Coordinate with supervisors</li>
+            <li>Follow project instructions and timelines</li>
+            <li>Report problems faced during fieldwork</li>
+          </ul>
+          <div class="pd-role-section-lbl">Required Skills</div>
+          <ul class="pd-role-list">
+            <li>Good communication and confidence</li>
+            <li>Basic computer / mobile skills</li>
+            <li>Time management and teamwork</li>
+            <li>Honest, responsible, and patient attitude</li>
+            <li>Attention to detail and ability to travel</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Field Assistant -->
+      <div class="pd-role-card">
+        <div class="pd-role-header">
+          <span class="pd-role-icon">&#128736;</span>
+          <div><div class="pd-role-title">Field Assistant</div><div class="pd-role-sub">Supports logistics, coordination &amp; documentation</div></div>
+        </div>
+        <div class="pd-role-body">
+          <div class="pd-role-section-lbl">Responsibilities</div>
+          <ul class="pd-role-list">
+            <li>Assist supervisors and enumerators in field activities</li>
+            <li>Arrange survey materials and equipment</li>
+            <li>Help manage attendance and schedules</li>
+            <li>Support data organization and documentation</li>
+            <li>Coordinate transportation and field logistics</li>
+            <li>Help respondents understand survey procedures</li>
+            <li>Monitor field operations when required</li>
+            <li>Ensure forms and devices are properly maintained</li>
+            <li>Provide administrative support to the team</li>
+          </ul>
+          <div class="pd-role-section-lbl">Required Skills</div>
+          <ul class="pd-role-list">
+            <li>Organizational and record-keeping skills</li>
+            <li>Communication and team coordination</li>
+            <li>Basic computer knowledge</li>
+            <li>Problem-solving and time management</li>
+            <li>Flexible and cooperative attitude</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Field Supervisor -->
+      <div class="pd-role-card">
+        <div class="pd-role-header">
+          <span class="pd-role-icon">&#128203;</span>
+          <div><div class="pd-role-title">Field Supervisor</div><div class="pd-role-sub">Manages field teams and ensures quality &amp; timelines</div></div>
+        </div>
+        <div class="pd-role-body">
+          <div class="pd-role-section-lbl">Responsibilities</div>
+          <ul class="pd-role-list">
+            <li>Supervise enumerators and field assistants</li>
+            <li>Monitor daily field activities</li>
+            <li>Ensure data quality and accuracy</li>
+            <li>Solve field-related problems</li>
+            <li>Verify completed surveys and conduct spot checks</li>
+            <li>Prepare daily progress reports</li>
+            <li>Coordinate with research managers</li>
+            <li>Ensure project timelines are followed</li>
+            <li>Train, guide and maintain discipline in the team</li>
+          </ul>
+          <div class="pd-role-section-lbl">Required Skills</div>
+          <ul class="pd-role-list">
+            <li>Leadership and team management</li>
+            <li>Strong communication and decision-making</li>
+            <li>Reporting, documentation and monitoring</li>
+            <li>Fieldwork experience and quality control</li>
+            <li>Ability to handle pressure professionally</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Data Collector -->
+      <div class="pd-role-card">
+        <div class="pd-role-header">
+          <span class="pd-role-icon">&#128202;</span>
+          <div><div class="pd-role-title">Data Collector</div><div class="pd-role-sub">Gathers and records information from respondents</div></div>
+        </div>
+        <div class="pd-role-body">
+          <div class="pd-role-section-lbl">Responsibilities</div>
+          <ul class="pd-role-list">
+            <li>Collect data from assigned respondents</li>
+            <li>Conduct interviews and surveys accurately</li>
+            <li>Verify collected information</li>
+            <li>Maintain confidentiality of all data</li>
+            <li>Use digital tools or forms for data entry</li>
+            <li>Submit reports to supervisors</li>
+            <li>Follow research guidelines and ethics</li>
+            <li>Maintain professionalism during fieldwork</li>
+          </ul>
+          <div class="pd-role-section-lbl">Required Skills</div>
+          <ul class="pd-role-list">
+            <li>Data recording accuracy and observation skills</li>
+            <li>Basic technical / mobile skills</li>
+            <li>Honesty, integrity and attention to detail</li>
+            <li>Time management and independence</li>
+            <li>Patience and professionalism</li>
+          </ul>
+        </div>
+      </div>
+
+    </div><!-- /pd-roles-grid -->
+
+    <!-- Common Interview FAQ -->
+    <div class="pd-section-title">Common Interview Questions About the Project</div>
+    <div class="pd-faq-list" id="pd-faq-list">
+
+      <div class="pd-faq-card" id="pdfaq-0">
+        <div class="pd-faq-head" onclick="togglePdFaq(0)">
+          <span class="pd-faq-num">Q1</span>
+          <span class="pd-faq-q">What is CERP?</span>
+          <span class="pd-faq-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+        </div>
+        <div class="pd-faq-ans" id="pdfaq-ans-0"><div class="pd-faq-ans-inner"><div class="pd-faq-ans-lbl">Answer</div><div class="pd-faq-ans-text">CERP stands for Centre for Economic Research in Pakistan. It is a research organization that works on surveys, policy research, data analysis, and social development projects to improve public services in Pakistan.</div></div></div>
+      </div>
+
+      <div class="pd-faq-card" id="pdfaq-1">
+        <div class="pd-faq-head" onclick="togglePdFaq(1)">
+          <span class="pd-faq-num">Q2</span>
+          <span class="pd-faq-q">What is the purpose of the SWM project?</span>
+          <span class="pd-faq-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+        </div>
+        <div class="pd-faq-ans" id="pdfaq-ans-1"><div class="pd-faq-ans-inner"><div class="pd-faq-ans-lbl">Answer</div><div class="pd-faq-ans-text">The purpose is to improve waste collection, recycling systems, and urban cleanliness in Lahore through research and accurate field data collection. The findings help policymakers make better decisions about waste management.</div></div></div>
+      </div>
+
+      <div class="pd-faq-card" id="pdfaq-2">
+        <div class="pd-faq-head" onclick="togglePdFaq(2)">
+          <span class="pd-faq-num">Q3</span>
+          <span class="pd-faq-q">What does LWMC stand for?</span>
+          <span class="pd-faq-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+        </div>
+        <div class="pd-faq-ans" id="pdfaq-ans-2"><div class="pd-faq-ans-inner"><div class="pd-faq-ans-lbl">Answer</div><div class="pd-faq-ans-text">LWMC stands for Lahore Waste Management Company. It is the government body responsible for solid waste collection and cleanliness in Lahore, and it is the key partner in this research project.</div></div></div>
+      </div>
+
+      <div class="pd-faq-card" id="pdfaq-3">
+        <div class="pd-faq-head" onclick="togglePdFaq(3)">
+          <span class="pd-faq-num">Q4</span>
+          <span class="pd-faq-q">Why is this project important?</span>
+          <span class="pd-faq-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+        </div>
+        <div class="pd-faq-ans" id="pdfaq-ans-3"><div class="pd-faq-ans-inner"><div class="pd-faq-ans-lbl">Answer</div><div class="pd-faq-ans-text">This project helps improve public cleanliness, environmental conditions, recycling systems, and waste management policies in Lahore. It provides evidence that government and organizations can use to make better decisions for citizens.</div></div></div>
+      </div>
+
+      <div class="pd-faq-card" id="pdfaq-4">
+        <div class="pd-faq-head" onclick="togglePdFaq(4)">
+          <span class="pd-faq-num">Q5</span>
+          <span class="pd-faq-q">What type of data will be collected in this project?</span>
+          <span class="pd-faq-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+        </div>
+        <div class="pd-faq-ans" id="pdfaq-ans-4"><div class="pd-faq-ans-inner"><div class="pd-faq-ans-lbl">Answer</div><div class="pd-faq-ans-text">Data related to households, waste collection methods, recycling practices, public opinions on cleanliness, sanitation conditions, and overall waste management practices in different union councils of Lahore.</div></div></div>
+      </div>
+
+      <div class="pd-faq-card" id="pdfaq-5">
+        <div class="pd-faq-head" onclick="togglePdFaq(5)">
+          <span class="pd-faq-num">Q6</span>
+          <span class="pd-faq-q">Why is accurate data important in this project?</span>
+          <span class="pd-faq-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+        </div>
+        <div class="pd-faq-ans" id="pdfaq-ans-5"><div class="pd-faq-ans-inner"><div class="pd-faq-ans-lbl">Answer</div><div class="pd-faq-ans-text">Accurate data helps researchers and policymakers make better decisions and improve public services. If the data is wrong, the entire research and its recommendations become unreliable, wasting resources and failing communities.</div></div></div>
+      </div>
+
+      <div class="pd-faq-card" id="pdfaq-6">
+        <div class="pd-faq-head" onclick="togglePdFaq(6)">
+          <span class="pd-faq-num">Q7</span>
+          <span class="pd-faq-q">What tools are used during field surveys?</span>
+          <span class="pd-faq-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+        </div>
+        <div class="pd-faq-ans" id="pdfaq-ans-6"><div class="pd-faq-ans-inner"><div class="pd-faq-ans-lbl">Answer</div><div class="pd-faq-ans-text">Tablets, mobile applications, survey forms, and observation sheets are the main tools used during field surveys. Digital tools help ensure faster and more accurate data entry and submission.</div></div></div>
+      </div>
+
+      <div class="pd-faq-card" id="pdfaq-7">
+        <div class="pd-faq-head" onclick="togglePdFaq(7)">
+          <span class="pd-faq-num">Q8</span>
+          <span class="pd-faq-q">Are field visits required for this project?</span>
+          <span class="pd-faq-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+        </div>
+        <div class="pd-faq-ans" id="pdfaq-ans-7"><div class="pd-faq-ans-inner"><div class="pd-faq-ans-lbl">Answer</div><div class="pd-faq-ans-text">Yes. All field staff members must travel to different union councils and areas of Lahore to conduct surveys and collect data. The project is entirely field-based and requires physical presence in communities.</div></div></div>
+      </div>
+
+      <div class="pd-faq-card" id="pdfaq-8">
+        <div class="pd-faq-head" onclick="togglePdFaq(8)">
+          <span class="pd-faq-num">Q9</span>
+          <span class="pd-faq-q">What qualities are most important for field staff?</span>
+          <span class="pd-faq-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+        </div>
+        <div class="pd-faq-ans" id="pdfaq-ans-8"><div class="pd-faq-ans-inner"><div class="pd-faq-ans-lbl">Answer</div><div class="pd-faq-ans-text">The most important qualities are communication skills, honesty, teamwork, discipline, patience, and responsibility. Field staff represent CERP and LWMC in communities, so professional behaviour is essential at all times.</div></div></div>
+      </div>
+
+      <div class="pd-faq-card" id="pdfaq-9">
+        <div class="pd-faq-head" onclick="togglePdFaq(9)">
+          <span class="pd-faq-num">Q10</span>
+          <span class="pd-faq-q">How should field staff behave with respondents?</span>
+          <span class="pd-faq-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+        </div>
+        <div class="pd-faq-ans" id="pdfaq-ans-9"><div class="pd-faq-ans-inner"><div class="pd-faq-ans-lbl">Answer</div><div class="pd-faq-ans-text">Staff should always behave politely, respectfully, and professionally. They must introduce themselves clearly, explain the survey purpose, respect the respondent's time and privacy, and never pressure anyone to participate.</div></div></div>
+      </div>
+
+    </div><!-- /pd-faq-list -->
+
+  </div>
+</div>
+<!-- ══════════════ END PROJECT DETAILS ══════════════ -->
+
+<div class="footer">
+  <div class="footer-left">CERP Interview Prep · 2026</div>
+  <div class="footer-right">Good luck, Azhar!</div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   Q&A DATA
+═══════════════════════════════════════════ */
+const catLabels = {intro:'Introduction',project:'Project Knowledge',field:'Fieldwork',skills:'Skills',scenario:'Scenario'};
+
+const enumQs = [
+  {cat:'intro',    q:'Tell us about yourself.',a:'My name is Azhar Khan. I have experience in field data collection and survey activities. My IT and Data Science background helps me manage and record data professionally. I am reliable, organized, and eager to contribute to this research project.'},
+  {cat:'project',  q:'What is CERP and what does it do?',a:'CERP stands for Centre for Economic Research in Pakistan. It is a research organization that conducts surveys, data analysis, and policy research. It uses evidence to help improve government services and public decision-making in Pakistan.'},
+  {cat:'project',  q:'What is this project about?',a:'This project studies waste collection and recycling systems in Lahore. It is done in collaboration with the Lahore Waste Management Company (LWMC). The goal is to understand how garbage collection can improve and how government and private waste systems can coordinate better.'},
+  {cat:'project',  q:'What is LWMC?',a:'LWMC stands for Lahore Waste Management Company. It is the government organization responsible for managing solid waste, garbage collection, and cleanliness in Lahore. This project is a research partnership with LWMC to improve waste systems.'},
+  {cat:'intro',    q:'Why do you want to work as an Enumerator?',a:'I enjoy fieldwork and direct interaction with communities. This role gives me the opportunity to contribute to meaningful public research while developing my professional skills in data collection and field operations.'},
+  {cat:'field',    q:'What is the main job of an Enumerator?',a:'An Enumerator visits households, communities, and waste workers to collect accurate data through surveys and interviews. The main task is to record correct information using survey forms or mobile applications and submit it on time.'},
+  {cat:'field',    q:'How will you introduce yourself to a respondent?',a:'I will greet them respectfully, state my name, explain that I am from a CERP research team working with LWMC, and clearly describe the purpose of the survey. I will assure them their information is confidential and used only for research.'},
+  {cat:'scenario', q:'What will you do if a respondent refuses to participate?',a:'I will remain calm and respectful. I will explain the purpose of the survey politely once more. If they are still not willing, I will thank them for their time and report the refusal to my supervisor for proper documentation.'},
+  {cat:'skills',   q:'How important is data accuracy in this job?',a:'Data accuracy is the most critical part of the job. All project results and recommendations depend on the data collected. Even small mistakes can lead to wrong conclusions, so I always double-check my entries before submitting.'},
+  {cat:'field',    q:'Are you comfortable traveling across different union councils in Lahore?',a:'Yes, I am fully comfortable traveling within different areas of Lahore. I understand that fieldwork requires flexibility and I am ready to work according to the project schedule and location requirements.'},
+  {cat:'skills',   q:'Can you use mobile survey applications?',a:'Yes, I am comfortable using mobile applications for data entry. My IT background helps me quickly learn new tools. I can operate mobile survey apps, manage forms, and ensure data is submitted correctly and on time.'},
+  {cat:'scenario', q:'What will you do if you make a mistake in a survey form?',a:'I will immediately correct it using the proper correction method — for paper forms I will cross out with one line and initial it, and for digital forms I will update the entry. I will also inform my supervisor so the data stays accurate.'},
+  {cat:'field',    q:'What is the importance of respondent confidentiality?',a:'Respondents must know their personal information is protected. Confidentiality builds trust and encourages honest answers. I will never share respondent details with anyone outside the project team and will follow all data privacy guidelines.'},
+  {cat:'skills',   q:'How do you manage your time in the field?',a:'I plan my daily visits in advance, organize households geographically to reduce travel time, and set time goals for each survey. If I fall behind, I inform my supervisor early so the schedule can be adjusted.'},
+  {cat:'scenario', q:'What will you do if a respondent gives unclear or inconsistent answers?',a:'I will politely ask clarifying follow-up questions to get accurate information. I will not guide them toward a specific answer. If the response remains inconsistent, I will note it properly in the remarks section for my supervisor to review.'},
+  {cat:'skills',   q:'Can you work in a team with other enumerators?',a:'Yes, I work well in teams. I believe good coordination among team members improves field coverage and data quality. I am happy to share responsibilities, communicate openly, and support my colleagues when needed.'},
+  {cat:'scenario', q:'What will you do if it rains heavily during field visits?',a:'I will prioritize safety first and wait if it is unsafe to travel. I will inform my supervisor immediately and reschedule the affected visits. I will use the downtime to review completed forms or prepare for the next day.'},
+  {cat:'project',  q:'What type of respondents will you interview in this project?',a:'In this project I will interview household members about their waste management practices, as well as waste collection workers, informal recyclers, and possibly local community representatives in different union councils of Lahore.'},
+  {cat:'skills',   q:'How do you handle a language barrier with a respondent?',a:'I will use simple and clear Urdu or Punjabi depending on the respondent. If there is still a communication problem, I will involve a local community contact or inform my supervisor so that proper assistance can be arranged.'},
+  {cat:'intro',    q:'What are your greatest strengths as an Enumerator?',a:'My key strengths are attention to detail, communication, patience, and discipline. My technical background helps with data management, and my fieldwork experience helps me handle different types of respondents professionally and calmly.'},
+  {cat:'scenario', q:'What will you do if a household is locked or the person is not home?',a:'I will record the visit attempt with the time and address, and plan a return visit at a different time of day. I will make at least two to three attempts before reporting the household as non-contactable to my supervisor.'},
+  {cat:'field',    q:'How will you ensure your daily survey targets are completed?',a:'I will plan my route efficiently before heading to the field, track my progress throughout the day, and adjust my pace if needed. I will communicate with my supervisor if any factor is delaying my progress so solutions can be found quickly.'},
+  {cat:'scenario', q:'What will you do if a respondent becomes aggressive or rude?',a:'I will stay calm, speak politely, and de-escalate the situation without arguing. If the respondent continues to be hostile, I will thank them and leave safely. I will immediately report the incident to my supervisor for guidance.'},
+  {cat:'skills',   q:'What does research ethics mean to you?',a:'Research ethics means collecting data honestly, treating respondents with respect, protecting their privacy, and never manipulating information. I will always follow the ethical guidelines provided during training and never falsify any survey data.'},
+  {cat:'project',  q:'Why is this waste management research important?',a:'Poor waste management affects public health, the environment, and the economy. This research will help LWMC and government authorities understand current gaps and design better policies for cleaner and more efficient waste collection in Lahore.'},
+  {cat:'field',    q:'How will you dress and present yourself during fieldwork?',a:'I will dress professionally and modestly to be appropriate for community visits. Presenting myself properly builds trust with respondents and reflects positively on CERP and the project.'},
+  {cat:'scenario', q:'What will you do if your mobile device or survey app stops working?',a:'I will switch to paper backup forms if available, note the issue clearly, and inform my supervisor immediately. I will not guess or fill in data from memory — accuracy is more important than speed.'},
+  {cat:'skills',   q:'How do you stay motivated during long field days?',a:'I remind myself of the importance of the work and how accurate data helps improve real services. I also maintain a positive attitude, take short organized breaks, and stay focused on completing my daily targets professionally.'},
+  {cat:'scenario', q:'What will you do if you are unsure how to answer a respondent\'s question about the project?',a:'I will be honest and tell them I will check with my supervisor and get back to them. I will never give false information about the project. Clear and honest communication builds respondent trust.'},
+  {cat:'intro',    q:'Are you available for a 3 to 5 day training before the project starts?',a:'Yes, I am fully available and committed to attending the complete training period. Training is important for understanding the survey tools, project guidelines, and quality standards before going to the field.'},
+  {cat:'field',    q:'Will you be comfortable working with a partner of the opposite gender?',a:'Yes, I respect project requirements and understand that male and female pairs improve safety and communication during household visits. I will maintain professional conduct at all times.'},
+  {cat:'skills',   q:'How do you handle stress during fieldwork?',a:'I stay organized, breathe calmly, and focus on one task at a time. I also communicate with my team if I am overwhelmed. Good planning before each day reduces most field-related stress significantly.'},
+  {cat:'scenario', q:'What will you do if you see a colleague filling in false data?',a:'This is a serious ethical issue. I will privately speak to my colleague first. If the behaviour continues, I will report it to my supervisor. Data integrity is non-negotiable and protects the entire project.'},
+  {cat:'project',  q:'What are Union Councils and why are they relevant?',a:'Union Councils are the smallest administrative units in Lahore. This project covers multiple union councils to ensure the research captures waste management practices across different types of neighbourhoods and communities in the city.'},
+  {cat:'field',    q:'How will you handle a very long survey with a tired respondent?',a:'I will thank them for their time, briefly explain how much remains, and offer to continue at a pace that suits them. I can also offer a short break. The respondent\'s comfort directly affects the quality of their answers.'},
+  {cat:'skills',   q:'Can you read and write in Urdu and English?',a:'Yes, I can read and write in both Urdu and English. This helps me understand survey forms and instructions in English while communicating comfortably with respondents in Urdu during fieldwork.'},
+  {cat:'scenario', q:'What if you arrive at a location and find the address is incorrect?',a:'I will record the discrepancy accurately in my field notes, contact my supervisor for guidance, and move on to the next scheduled visit. I will not guess or skip the household without proper documentation.'},
+  {cat:'intro',    q:'How did you hear about this job opportunity?',a:'I learned about the CERP enumerator position through the job advertisement posted online. After reading about the project and organization, I felt this role closely matches my fieldwork and data collection experience and skills.'},
+  {cat:'skills',   q:'What is informed consent and how will you get it from respondents?',a:'Informed consent means the respondent voluntarily agrees to participate after understanding the purpose of the survey. I will explain the project clearly, tell them participation is optional, and ask for their verbal or written consent before beginning.'},
+  {cat:'scenario', q:'What will you do if you have two areas to cover but limited time?',a:'I will prioritize based on supervisor guidance and the project\'s survey targets. I will inform my supervisor about the time constraint early so decisions can be made on which areas to prioritize and whether additional support is needed.'},
+  {cat:'field',    q:'How will you record data for a respondent who cannot read or write?',a:'I will read each question to them clearly, listen to their answers carefully, and record their responses myself. I will confirm each answer back to them before moving on to ensure accuracy.'},
+  {cat:'skills',   q:'What does a good survey form completion look like?',a:'Every question answered, no blank spaces without a reason, consistent and logical responses, correct spelling of names and places, and the enumerator\'s code and date clearly marked. A completed form must be understandable to anyone who reads it.'},
+  {cat:'project',  q:'What do you know about informal recycling workers in Lahore?',a:'Informal recyclers, often called "kabari" workers, collect and sell recyclable materials like paper, plastic, and metal. This project likely includes them as key stakeholders because they play an important role in Lahore\'s waste chain outside the formal system.'},
+  {cat:'scenario', q:'What will you do if a community leader tries to influence how you collect data?',a:'I will politely explain that the survey must be conducted independently and that all answers must come directly from the respondent. I will report the interaction to my supervisor to ensure data integrity is protected.'},
+  {cat:'skills',   q:'Why is follow-up important in data collection?',a:'Follow-up ensures that missed or incomplete surveys are recovered, reducing gaps in the data. It also helps verify information when responses seem unclear. Good follow-up practice improves the overall quality and completeness of the dataset.'},
+  {cat:'field',    q:'What will you carry with you on a typical field day?',a:'I will carry my ID card, project introduction letter, survey forms or a charged mobile device with the app, a pen, field notes book, supervisor contact number, and any guidelines or maps provided during training.'},
+  {cat:'intro',    q:'Where do you see yourself in this project after three months?',a:'I want to be recognized as a reliable and high-performing enumerator with strong data quality. I hope to have contributed to completing the survey targets accurately and to have built good working relationships with my team and supervisor.'},
+  {cat:'scenario', q:'What will you do if the respondent speaks only Punjabi?',a:'I can communicate in Punjabi at a basic level. If needed, I will use simpler language and if the respondent still cannot be interviewed comfortably, I will report this to my supervisor so a suitable team member can be assigned.'},
+  {cat:'skills',   q:'How do you handle situations where you do not know the answer?',a:'I say honestly that I am not sure and that I will check with my supervisor. I never guess or provide incorrect information. This protects both the project\'s reputation and the respondent\'s trust.'},
+  {cat:'intro',    q:'Why should CERP hire you as an Enumerator?',a:'I am disciplined, honest, and experienced in fieldwork. I take data accuracy seriously, communicate respectfully with people from all backgrounds, and I am committed to completing my responsibilities on time. I will represent CERP professionally in every community I visit.'}
+];
+
+const supQs = [
+  {cat:'intro',    q:'Tell us about yourself and your relevant experience.',a:'My name is Azhar Khan. I have experience in field data collection, survey coordination, and team management. My IT and Data Science background helps me understand data quality, reporting, and monitoring. I am organized, responsible, and ready to lead a field team effectively.'},
+  {cat:'intro',    q:'Why are you applying for the Field Supervisor position?',a:'I believe I have the right combination of fieldwork experience, leadership ability, and technical knowledge for this role. I want to take on greater responsibility and contribute to the success of this project at a higher level.'},
+  {cat:'project',  q:'What is CERP and what kind of work does it do?',a:'CERP is the Centre for Economic Research in Pakistan. It conducts surveys, data analysis, and policy research to help improve public services and government decision-making through evidence-based findings.'},
+  {cat:'project',  q:'What is this LWMC project about?',a:'This project studies waste collection and recycling systems in Lahore in partnership with the Lahore Waste Management Company. The objective is to identify gaps in waste management and find ways to improve coordination between formal and informal waste systems.'},
+  {cat:'field',    q:'What is the main role of a Field Supervisor?',a:'A Field Supervisor manages and monitors enumerators, ensures surveys are completed accurately and on time, checks completed forms for quality, solves problems in the field, and reports daily progress to project managers.'},
+  {cat:'skills',   q:'How will you ensure the quality of data collected by your team?',a:'I will conduct daily briefings before fieldwork, accompany enumerators during initial visits, randomly re-check completed surveys, identify errors immediately, provide feedback, and report any quality issues to project management with proposed solutions.'},
+  {cat:'scenario', q:'An enumerator repeatedly makes errors in survey forms. What will you do?',a:'First I will identify the pattern of errors and sit down with the enumerator to explain the correct process with clear examples. I will arrange retraining if needed. If errors continue despite support, I will document the issue and escalate it formally to project management.'},
+  {cat:'scenario', q:'Two enumerators have a disagreement in the field. How do you handle it?',a:'I will separate them calmly and listen to both sides privately. I will remain neutral, identify the root cause, and find a professional resolution that keeps work on track. I will set clear expectations for professional conduct going forward.'},
+  {cat:'skills',   q:'How do you plan field assignments for your team?',a:'I review the survey area maps, divide union councils fairly based on team size and accessibility, assign pairs where required, set daily targets per enumerator, and share a clear schedule every morning with backup plans for common issues like refusals or absent respondents.'},
+  {cat:'field',    q:'How will you coordinate between enumerators and project management?',a:'I will maintain a daily progress log, submit reports to management at the end of each day, flag any issues immediately via phone or message, and ensure that instructions from management are communicated clearly and on time to all team members.'},
+  {cat:'scenario', q:'Your team is behind schedule and the deadline is close. How do you respond?',a:'I will first identify the cause of the delay. Then I will redistribute tasks, increase daily targets with team agreement, and communicate honestly with management about progress and the revised completion plan.'},
+  {cat:'skills',   q:'How do you motivate enumerators during a long and demanding project?',a:'I acknowledge their hard work regularly, communicate the importance of their contribution, resolve frustrations quickly, keep communication open and positive, and create a team atmosphere where everyone feels respected and supported.'},
+  {cat:'field',    q:'How will you handle a union council where community members are resistant to surveys?',a:'I will work with local community leadership to introduce the project and build trust. I will ensure enumerators have clear and respectful introductions, and I will personally visit resistant households to demonstrate how to approach them professionally.'},
+  {cat:'scenario', q:'You discover that an enumerator has been fabricating survey responses. What do you do?',a:'This is a serious integrity violation. I will immediately suspend that enumerator\'s data submissions and document the evidence. I will report the issue to project management and cooperate fully with any review process. All data submitted must be verified or recollected.'},
+  {cat:'skills',   q:'What does data quality control mean in fieldwork?',a:'Data quality control means regularly checking that surveys are complete, consistent, and accurately filled. It includes spot-checking forms, re-interviewing a sample of respondents to verify information, correcting errors before submission, and tracking error rates by enumerator.'},
+  {cat:'project',  q:'How would you handle interviewing waste workers as a sensitive respondent group?',a:'Waste workers may be cautious about sharing information. I will train enumerators to approach them respectfully, explain that the research is to improve their working conditions and not for punitive purposes, and ensure the interview environment feels safe and confidential.'},
+  {cat:'scenario', q:'One enumerator is always late and misses targets. What is your approach?',a:'I will have a private conversation to understand if there is a personal or logistical issue affecting their performance. I will set clear expectations and offer support. If the behaviour does not improve, I will document it and formally report to management with a recommendation for action.'},
+  {cat:'skills',   q:'How do you manage and track daily field progress?',a:'I use a daily tracking sheet listing each enumerator\'s assigned households, surveys completed, pending visits, and refusals. I review this at the end of each day and send a concise progress report to management with completion rates and any emerging issues.'},
+  {cat:'intro',    q:'What leadership qualities do you bring to this role?',a:'I bring calmness under pressure, clear communication, fairness, problem-solving ability, and genuine concern for my team\'s success. I lead by example, maintain discipline without being harsh, and always keep the project goals in focus.'},
+  {cat:'field',    q:'How will you ensure enumerators follow ethical research guidelines?',a:'During team briefings I will reinforce research ethics daily — no fabrication, no pressure on respondents, proper consent, and data confidentiality. I will model ethical behaviour myself and treat any violation seriously, regardless of who commits it.'},
+  {cat:'scenario', q:'A respondent calls and complains about how an enumerator treated them. What do you do?',a:'I will listen to the complaint respectfully and apologize for the negative experience. I will investigate by speaking with the enumerator and reviewing their visit records. Appropriate action will be taken and I will follow up with the respondent to confirm resolution.'},
+  {cat:'skills',   q:'How do you ensure enumerators understand the survey questions correctly?',a:'During training I will go through each question with the team, explain the objective, demonstrate how to ask it, and role-play difficult scenarios. I will also prepare a simple FAQ sheet that enumerators can refer to during fieldwork.'},
+  {cat:'project',  q:'What challenges do you expect in surveying different union councils?',a:'Challenges may include access to narrow streets and informal settlements, uncooperative respondents, hot weather, language differences, and locating specific households. I will plan for each with backup routes, rest breaks, and flexible scheduling.'},
+  {cat:'scenario', q:'Your team is given a new union council to cover on short notice. How do you organize it?',a:'I will quickly review the area on maps, estimate the number of households, redistribute my team\'s assignments, brief everyone on the new area, and adjust the day\'s schedule. I will inform management of the updated plan and expected timeline.'},
+  {cat:'skills',   q:'How do you write a field report for project management?',a:'A good field report includes: date and area covered, number of surveys completed vs target, key issues encountered, refusal rates, any data quality concerns, and recommended actions. It should be clear, factual, and submitted at a consistent time each day.'},
+  {cat:'field',    q:'How will you ensure the safety of female enumerators during fieldwork?',a:'Female enumerators will be paired appropriately, given clearly defined working hours, will not visit locations alone, and will have my contact number at all times. I will monitor their location progress during the day and ensure they complete work in safe conditions.'},
+  {cat:'intro',    q:'How do you handle pressure from management to increase speed without compromising quality?',a:'I acknowledge the pressure, communicate the trade-offs clearly, and propose a realistic plan that balances speed with quality. I will never encourage enumerators to cut corners on accuracy. A faster but flawed dataset serves no one.'},
+  {cat:'scenario', q:'Two areas need coverage simultaneously but you only have enough staff for one. What do you do?',a:'I will immediately report the resource gap to management and request additional enumerators or a timeline adjustment. In the meantime, I will prioritize the area with higher survey targets while clearly documenting the delay for the other area.'},
+  {cat:'skills',   q:'What does effective communication look like with your enumerator team?',a:'Effective communication means giving clear daily instructions, being available for questions throughout the day, responding quickly to field problems, holding brief end-of-day debriefs, and maintaining an open and respectful tone so team members feel comfortable raising issues.'},
+  {cat:'field',    q:'How will you conduct quality back-checks on completed surveys?',a:'I will randomly select 10-15% of completed surveys and revisit those households to verify key responses. I will compare the re-interview results with the original form. Significant differences will trigger a full review of that enumerator\'s work.'},
+  {cat:'intro',    q:'Why should CERP choose you as Field Supervisor over other candidates?',a:'I combine fieldwork experience, technical data skills, leadership ability, and a strong work ethic. I take responsibility seriously, lead fairly, and am fully committed to delivering high-quality data that this project depends on. I will protect the team and the data with equal dedication.'},
+  {cat:'skills',   q:'How do you train a new enumerator who has never done fieldwork before?',a:'I pair them with an experienced enumerator on their first day, walk them through the survey form question by question, role-play a full interview with them, accompany them on their first real visit, then review their first completed forms together with detailed feedback.'},
+  {cat:'scenario', q:'An enumerator reports feeling unsafe in their assigned area. What do you do?',a:'Safety comes first. I will immediately reassign them, personally assess the area, and inform management. I will not send anyone to a location I would not go to myself. The survey schedule can be adjusted — a team member\'s safety cannot.'},
+  {cat:'project',  q:'What key performance indicators would you track during this project?',a:'I would track: daily surveys completed vs target, refusal rate, data error rate per enumerator, average survey completion time, missed household follow-up rate, and report submission timeliness. These give a clear picture of both team performance and data quality.'},
+  {cat:'skills',   q:'How do you give constructive feedback to underperforming team members?',a:'I give feedback privately, focus on specific behaviours rather than character, explain the impact of the issue on the project, and offer clear steps for improvement. I follow up after to see if the guidance helped and acknowledge improvement when it occurs.'},
+  {cat:'field',    q:'How will you coordinate with local authorities or community leaders if needed?',a:'I will introduce myself and the project professionally, explain our objectives and how the research benefits the community, obtain any necessary permissions, and maintain a respectful working relationship. I will keep management informed of any formal interactions.'},
+  {cat:'scenario', q:'Your project manager asks you to submit data before it has been fully quality-checked. What do you do?',a:'I will communicate the risk clearly to the manager — submitting unchecked data can affect research results. I will propose a realistic shortened timeline for a basic check, or submit with a clear note that a full quality review is still pending.'},
+  {cat:'skills',   q:'How do you maintain your own productivity while also managing your team?',a:'I organize my supervisor tasks in defined time blocks — team coordination in the morning, field monitoring midday, quality checks in the afternoon, and reporting in the evening. This structure allows me to stay on top of my own responsibilities without neglecting my team.'},
+  {cat:'intro',    q:'What would you do in your first week as Field Supervisor?',a:'I would attend all training sessions fully, build rapport with my enumerator team, understand the survey tools and quality standards deeply, review the assigned union councils on maps, identify potential challenges, and establish clear daily routines for briefings and reporting.'},
+  {cat:'scenario', q:'A household initially agrees but changes their mind mid-survey. What happens?',a:'I instruct enumerators to stop the survey immediately and respectfully. Participation is always voluntary. The partial data must not be submitted. The household is recorded as a withdrawal and reported to management. We move to the next planned household.'},
+  {cat:'field',    q:'How will you handle areas with very low survey completion rates?',a:'I will visit those areas personally to understand the reason for refusals, adjust the approach or introduction, consider different visiting times, coordinate with local community contacts, and report the issue to management if systemic barriers exist.'},
+  {cat:'skills',   q:'How do you handle team members who are stronger performers than others?',a:'I assign stronger team members to more challenging areas while ensuring they do not feel overburdened. I also use their experience to support weaker team members through informal peer learning. Equal acknowledgement across the team prevents resentment.'},
+  {cat:'project',  q:'How does this research potentially benefit Lahore\'s waste management system?',a:'By collecting accurate data on waste flows, worker conditions, household practices, and coordination gaps, this research can provide LWMC and policymakers with evidence to improve collection routes, integrate informal recyclers, and design better waste reduction programs.'},
+  {cat:'scenario', q:'You notice an enumerator skipping questions to save time. What do you do?',a:'I will immediately and privately address this with the enumerator. I will explain that incomplete surveys compromise the entire research and cannot be submitted. I will review their previously submitted forms and correct or flag any incomplete data.'},
+  {cat:'skills',   q:'What role does documentation play in field supervision?',a:'Documentation is essential. It creates a record of what was done, where, when, and by whom. Good documentation allows management to track progress, audit quality, resolve disputes, and learn from what worked or did not work for future projects.'},
+  {cat:'field',    q:'How will you handle an enumerator who disagrees with your decisions?',a:'I will listen to their concern respectfully and consider if they have a valid point. If the decision was correct, I will explain my reasoning clearly. I welcome professional input, but ultimately I am accountable for team decisions and will communicate that with respect.'},
+  {cat:'intro',    q:'Are you available for the full project duration starting 8 June 2026?',a:'Yes, I am fully committed to the project from the start date. I understand the importance of continuity in field supervision and will ensure I am present, available, and fully engaged throughout the project period.'},
+  {cat:'scenario', q:'A natural event like heavy flooding affects your field area. How do you respond?',a:'I will immediately suspend field activities in affected areas and ensure all team members are safe. I will report to management, document the affected areas and missed surveys, and propose a revised plan for when conditions improve. Team safety is always the top priority.'},
+  {cat:'skills',   q:'What is the difference between monitoring and supervision in fieldwork?',a:'Monitoring is tracking progress and output — are targets being met, is data being collected. Supervision is actively guiding and supporting the team — are they doing it correctly, do they need help, are quality standards being maintained. Both are equally important for a successful project.'},
+  {cat:'scenario', q:'How will you handle it if an enumerator quits mid-project?',a:'I will immediately inform management and document the resignation. I will reassign their pending households fairly among the remaining team, assess if the timeline needs adjusting, and recommend a replacement if one is needed. I will ensure continuity without overburdening the team.'}
+];
+
+/* ═══════════════════════════════════════════
+   MCQ DATA  — 50 Enumerator + 50 Supervisor
+   Each: { q, opts:[A,B,C,D], ans:0-3 }
+═══════════════════════════════════════════ */
+const enumMcqs = [
+  {q:'What does CERP stand for?', opts:['Centre for Economic Research in Pakistan','Centre for Educational Reform in Punjab','Commission for Economic Research and Policy','Council for Environmental Research in Pakistan'], ans:0},
+  {q:'Which company is CERP collaborating with for this waste management project?', opts:['KMC','LWMC','WASA','LESCO'], ans:1},
+  {q:'What is the primary task of an Enumerator?', opts:['Managing the project budget','Supervising other team members','Collecting accurate data from the field','Writing research reports'], ans:2},
+  {q:'What should you do first when meeting a new respondent?', opts:['Start filling the survey form immediately','Greet them, introduce yourself and explain the survey purpose','Ask for their national ID card','Call your supervisor'], ans:1},
+  {q:'If a respondent refuses to participate, what is the correct response?', opts:['Report them to local authorities','Pressure them until they agree','Politely thank them and document the refusal','Skip their household without recording anything'], ans:2},
+  {q:'LWMC stands for:', opts:['Lahore Water Management Company','Lahore Waste Management Company','Lahore Works and Maintenance Corporation','Lahore Welfare and Municipal Committee'], ans:1},
+  {q:'Which city is the main focus of this research project?', opts:['Karachi','Islamabad','Lahore','Peshawar'], ans:2},
+  {q:'What is the application deadline for this project?', opts:['1 May 2026','22 May 2026','8 June 2026','30 June 2026'], ans:1},
+  {q:'When is the expected job start date?', opts:['1 May 2026','22 May 2026','8 June 2026','1 July 2026'], ans:2},
+  {q:'How long is the mandatory training for shortlisted candidates?', opts:['1 day','3–5 days','1 week','2 weeks'], ans:1},
+  {q:'What is the smallest administrative unit in Lahore where surveys will be conducted?', opts:['District','Tehsil','Union Council','Mohalla'], ans:2},
+  {q:'What should an Enumerator carry on a typical field day?', opts:['Only a mobile phone','ID card, forms/device, pen, supervisor contact, field notes','Just the survey forms','A laptop and printer'], ans:1},
+  {q:'What does "informed consent" mean?', opts:['The supervisor approves the data','The respondent voluntarily agrees after understanding the purpose','The government gives permission for surveys','The respondent signs a legal contract'], ans:1},
+  {q:'If your mobile survey app stops working, you should:', opts:['Guess the answers and submit later','Skip the household and move on','Switch to paper backup and inform your supervisor','Wait until tomorrow to continue'], ans:2},
+  {q:'How should you correct a mistake on a paper survey form?', opts:['Use correction fluid to erase it','Tear the page and restart','Cross out with one line, initial it, write the correction','Ask the respondent to fix it'], ans:2},
+  {q:'Which of these is an example of violating respondent confidentiality?', opts:['Keeping the form locked away','Sharing respondent details with a neighbour','Submitting the survey to your supervisor','Recording anonymous responses'], ans:1},
+  {q:'What are informal recyclers in Lahore commonly called?', opts:['Sanitation workers','Kabari workers','LWMC staff','Field officers'], ans:1},
+  {q:'If a household is locked on your first visit, you should:', opts:['Mark it as "completed" and move on','Record the attempt and return at a different time','Skip it permanently','Call the police'], ans:1},
+  {q:'What is research ethics in fieldwork?', opts:['Following the fastest data collection method','Collecting data honestly, respecting respondents, and protecting privacy','Giving respondents gifts to participate','Recording only positive responses'], ans:1},
+  {q:'Male and female enumerators working in pairs is done to:', opts:['Save transport costs','Improve safety and communication during household visits','Complete surveys twice as fast','Reduce the number of team members needed'], ans:1},
+  {q:'If a respondent speaks only Punjabi and you struggle to communicate, you should:', opts:['Guess their answers','Skip the interview','Inform your supervisor so a suitable team member can be assigned','End fieldwork for the day'], ans:2},
+  {q:'Which of the following is NOT a responsibility of an Enumerator?', opts:['Conducting interviews','Filling survey forms accurately','Managing and supervising other enumerators','Visiting households'], ans:2},
+  {q:'What should you do if a community leader tries to influence how you collect data?', opts:['Follow their instructions','Politely refuse and report the interaction to your supervisor','Stop fieldwork in that area','Accept their help to speed up the survey'], ans:1},
+  {q:'Why is data accuracy described as "extremely important"?', opts:['Because it helps enumerators get paid faster','Because research decisions and recommendations depend on correct data','Because the government requires a specific number of surveys','Because it impresses the project manager'], ans:1},
+  {q:'What should you include at the end of every completed survey form?', opts:['A photograph of the respondent','Your mobile number','Your enumerator code and the date','The respondent\'s signature only'], ans:2},
+  {q:'If a respondent gives inconsistent answers, you should:', opts:['Submit the form as-is','Ask polite clarifying questions and note the issue in remarks','Change the answer to something that makes sense','End the interview immediately'], ans:1},
+  {q:'What does "back-checking" in fieldwork mean?', opts:['Reviewing your own notes at the end of the day','Re-visiting a sample of households to verify responses','Checking your survey form before printing','Asking your supervisor to review your work'], ans:1},
+  {q:'Before going to the field each day, an Enumerator should:', opts:['Wait for the supervisor to assign tasks in the field','Plan their route, review survey targets and prepare materials','Fill in survey responses in advance to save time','Only go when specifically called by the project manager'], ans:1},
+  {q:'Which of the following best describes what CERP does?', opts:['It manufactures recycling equipment','It builds sanitation infrastructure in Pakistan','It conducts research, surveys and analysis to improve public policy','It manages garbage collection directly in Lahore'], ans:2},
+  {q:'If you are unsure how to answer a respondent\'s question about the project, you should:', opts:['Give your personal opinion','Make up an answer to sound professional','Tell them honestly you will check and get back to them','Ignore the question and continue the survey'], ans:2},
+  {q:'What should you do if a colleague is fabricating survey data?', opts:['Ignore it — it is not your responsibility','Join in to save time','Speak to the colleague first, then report it to the supervisor if it continues','Report directly to the police'], ans:2},
+  {q:'How should an Enumerator dress for field visits?', opts:['Casually, in comfortable clothes only','Professionally and modestly, appropriate for community visits','In LWMC branded uniform always','In traditional local dress only'], ans:1},
+  {q:'What does the project aim to study about informal recyclers?', opts:['How to replace them with machines','How they can coordinate better with LWMC\'s formal waste system','How many of them are working illegally','Their personal income levels only'], ans:1},
+  {q:'If heavy rain prevents field visits, what is the best action?', opts:['Continue working regardless of safety','Inform your supervisor, reschedule visits, and use the time to review completed forms','File a report with the government','Go home and don\'t inform anyone'], ans:1},
+  {q:'Which skill is most essential for an Enumerator?', opts:['Computer programming','Accurate data collection and clear communication','Financial management','Legal knowledge'], ans:1},
+  {q:'What is the purpose of a project introduction letter carried in the field?', opts:['To replace the survey form if lost','To help respondents identify you as a legitimate researcher','To claim payment from respondents','To get discounts on transport'], ans:1},
+  {q:'What happens to partial survey data if a respondent withdraws mid-survey?', opts:['It must be submitted as-is','It is saved automatically on the device','It must not be submitted — the withdrawal is recorded instead','The supervisor decides what to do with it'], ans:2},
+  {q:'If you have two areas to cover but not enough time, you should:', opts:['Cover both quickly by skipping some questions','Inform the supervisor early and prioritize based on guidance','Cover the area closest to home first','Skip the second area without reporting'], ans:1},
+  {q:'What is the main goal of this waste management research project?', opts:['To punish waste workers for illegal dumping','To identify how waste collection and recycling can be improved in Lahore','To privatize LWMC operations','To reduce the number of sanitation workers'], ans:1},
+  {q:'After completing a survey, what is the immediate next step?', opts:['Call the respondent to thank them','Submit the form and move to the next assigned household','Take a break for at least one hour','Wait for the supervisor to review it before moving on'], ans:1},
+  {q:'How many visit attempts should be made before marking a household as non-contactable?', opts:['One','At least two to three','Five or more','Just one, then report immediately'], ans:1},
+  {q:'What type of organization is CERP primarily?', opts:['Government ministry','Private company','Research organization','Non-profit advocacy group'], ans:2},
+  {q:'Respondent confidentiality means:', opts:['Respondents must keep the survey questions secret','Personal information is protected and not shared outside the project team','Respondents cannot share their own answers with anyone','The survey results are kept from the government'], ans:1},
+  {q:'If a respondent cannot read or write, the Enumerator should:', opts:['Ask a family member to fill the form','Read each question aloud and record their spoken answers','Skip that household','Give them a simpler version of the form'], ans:1},
+  {q:'Why is follow-up important in data collection?', opts:['It helps the enumerator earn more','It ensures missed or incomplete surveys are recovered and data quality improves','It gives enumerators extra time in the field','It is required by government law'], ans:1},
+  {q:'The training before this project is important because:', opts:['It is a legal requirement to get paid','It teaches survey tools, project guidelines and quality standards','It is a chance to meet other candidates','It replaces fieldwork experience'], ans:1},
+  {q:'What should an Enumerator do to handle stress during fieldwork?', opts:['Stop work and rest for the day','Stay organized, focus on one task at a time, and communicate with the team if overwhelmed','Ignore the stress and push through without breaks','Ask a family member to help with the workload'], ans:1},
+  {q:'Which of these is the correct way to plan your field route?', opts:['Visit in random order based on availability','Organize households geographically to reduce travel time','Always start from the furthest household first','Follow alphabetical order of household names'], ans:1},
+  {q:'What should you say when you do not know the answer to a question in the field?', opts:['Make an educated guess','Say you are not sure and will check with your supervisor','Change the subject and move on','Tell the respondent the question is not important'], ans:1},
+  {q:'Which of the following groups will likely be interviewed in this project?', opts:['Only LWMC government staff','Only wealthy neighbourhoods','Household members, waste collection workers and informal recyclers','Only school children'], ans:2}
+];
+
+const supMcqs = [
+  {q:'What is the primary responsibility of a Field Supervisor?', opts:['Conducting all surveys personally','Managing enumerators and ensuring quality data collection','Writing the final research report','Negotiating with LWMC management'], ans:1},
+  {q:'How should a Field Supervisor respond if an enumerator is found fabricating data?', opts:['Warn them and continue as normal','Immediately suspend their submissions, document the issue, and report to management','Cover it up to protect the project timeline','Ask other enumerators to redo that person\'s work quietly'], ans:1},
+  {q:'What percentage of completed surveys should be randomly back-checked?', opts:['1–2%','5%','10–15%','50%'], ans:2},
+  {q:'What does a daily field report from a supervisor typically include?', opts:['Personal opinions about team members','Surveys completed vs target, issues encountered, refusal rates and recommendations','A list of household addresses only','The supervisor\'s own survey responses'], ans:1},
+  {q:'If two enumerators have a conflict, what should the supervisor do first?', opts:['Immediately dismiss one of them','Listen to both sides privately and find a neutral resolution','Ignore it and let them resolve it themselves','Report it to police'], ans:1},
+  {q:'LWMC stands for:', opts:['Lahore Water Management Committee','Lahore Waste Management Company','Labour Welfare and Municipal Commission','Lahore Works Management Corporation'], ans:1},
+  {q:'A Field Supervisor is responsible for:', opts:['Paying enumerators their salaries','Monitoring survey quality, managing the team and reporting to project management','Designing the research methodology','Procuring survey equipment from vendors'], ans:1},
+  {q:'If an enumerator repeatedly makes errors despite guidance, the supervisor should:', opts:['Fire them on the spot','Ignore it as it will improve over time','Retrain them, document the pattern, and escalate formally if it continues','Submit their flawed data anyway to meet targets'], ans:2},
+  {q:'What is the purpose of a morning briefing before fieldwork begins?', opts:['To check enumerators\' attendance only','To give clear daily instructions, clarify guidelines and review targets','To collect mobile devices from the team','To discuss personal matters'], ans:1},
+  {q:'What is back-checking in field supervision?', opts:['Reviewing the previous day\'s targets','Re-visiting a sample of households to verify enumerator data accuracy','Checking survey forms for spelling errors only','Returning to the office before fieldwork ends'], ans:1},
+  {q:'What should a supervisor do if an enumerator feels unsafe in their assigned area?', opts:['Tell them to continue anyway','Immediately reassign them and inform management — safety is the top priority','Ask them to go with a colleague without informing management','Reduce their target for the day'], ans:1},
+  {q:'A good Field Supervisor should track which of these KPIs?', opts:['Number of cups of tea consumed per day','Surveys completed vs target, refusal rates, and error rates per enumerator','Only the number of households visited','Personal preferences of respondents'], ans:1},
+  {q:'When a project manager pressures the supervisor to submit unchecked data, the supervisor should:', opts:['Submit it immediately without question','Communicate the risk clearly and propose a realistic basic quality check first','Ignore the instruction and not submit anything','Ask enumerators to check their own data'], ans:1},
+  {q:'How should a supervisor plan field assignments among enumerators?', opts:['Assign all areas to the most experienced enumerator','Divide union councils fairly, assign pairs where needed, and set daily targets with schedules','Let enumerators choose their own areas','Assign randomly by lottery'], ans:1},
+  {q:'If a household withdraws consent mid-survey, the supervisor should instruct the enumerator to:', opts:['Submit the partial data to avoid losing the visit','Continue quickly before the respondent changes their mind','Stop immediately, record the withdrawal and move to the next household','Ask a family member to complete the remaining questions'], ans:2},
+  {q:'Waste workers should be approached during interviews with:', opts:['Authority and formal questions','Respect, and an explanation that the research aims to improve their working conditions','Suspicion about illegal activities','Urgency to complete the survey quickly'], ans:1},
+  {q:'What is the difference between monitoring and supervision?', opts:['They are the same thing','Monitoring tracks output and progress; supervision guides, supports and ensures quality','Monitoring is done by management only; supervision is for enumerators','Supervision is done remotely; monitoring is done in the field'], ans:1},
+  {q:'If a community leader tries to interfere with data collection, the supervisor should:', opts:['Follow their instructions to maintain local cooperation','Politely refuse, explain project independence, and report the interaction to management','Stop fieldwork in that union council','Let enumerators decide how to handle it'], ans:1},
+  {q:'How should constructive feedback be delivered to an underperforming enumerator?', opts:['Publicly in front of the team to set an example','Privately, focusing on specific behaviours, impact and clear improvement steps','Only in writing via a formal letter','By comparing them negatively to better-performing team members'], ans:1},
+  {q:'If an enumerator quits mid-project, what should the supervisor do first?', opts:['Immediately advertise for a replacement independently','Inform management, document the resignation and redistribute pending work fairly','Ask another enumerator to double their workload','Submit incomplete data for that enumerator\'s area'], ans:1},
+  {q:'What is the purpose of pairing male and female enumerators?', opts:['To reduce the number of enumerators needed','To improve safety and communication during household visits','To satisfy a government gender quota','To cover more area per day'], ans:1},
+  {q:'A Field Supervisor should submit progress reports to management:', opts:['Weekly only','At the end of each day','Only when there is a problem','At the start of each month'], ans:1},
+  {q:'Which approach helps motivate enumerators during a demanding project?', opts:['Threatening them with salary cuts for poor performance','Acknowledging hard work, resolving frustrations quickly and keeping communication positive','Assigning them more work when targets are met','Reducing daily targets to avoid stress'], ans:1},
+  {q:'If an area has very low survey completion rates, the supervisor should:', opts:['Report it to management and abandon the area','Personally visit the area, identify reasons for refusals and adjust the approach','Assign it to a different project entirely','Submit whatever data is available'], ans:1},
+  {q:'What is the correct action when a new union council is added on short notice?', opts:['Refuse until given more notice','Review the area on maps, redistribute assignments and brief the team before starting','Send only one enumerator to assess it','Delay the original areas to focus on the new one'], ans:1},
+  {q:'Why is documentation important in field supervision?', opts:['It helps the supervisor avoid blame','It creates a verifiable record of progress, quality and decisions for management review','It is only needed for government audits','It replaces the need for daily briefings'], ans:1},
+  {q:'How many times should a household be visited before marking it as non-contactable?', opts:['Once','Twice','At least two to three times at different times of day','Five or more times'], ans:2},
+  {q:'A supervisor maintains productivity while managing the team by:', opts:['Doing all field visits themselves','Organizing tasks in time blocks — coordination, monitoring, quality checks and reporting','Delegating all responsibilities to the senior enumerator','Working overtime every day'], ans:1},
+  {q:'What is the most important quality in a Field Supervisor during a crisis?', opts:['Speed — completing tasks faster than normal','Remaining calm, organizing tasks clearly and communicating effectively with the team','Blaming enumerators to protect their own record','Immediately contacting media'], ans:1},
+  {q:'Training enumerators who have never done fieldwork should begin with:', opts:['Sending them straight to difficult areas','Pairing them with an experienced enumerator and role-playing interviews before real visits','Giving them a written test only','Assigning them the largest area first'], ans:1},
+  {q:'Which of the following is a sign of good data quality control?', opts:['All surveys submitted on time regardless of accuracy','A low number of back-checks to save time','Regular spot-checks, error tracking per enumerator and correction before submission','Letting enumerators self-report their own errors'], ans:2},
+  {q:'What does KPI stand for in project management?', opts:['Key Project Index','Key Performance Indicator','Knowledge and Practice Instrument','Key Personnel Information'], ans:1},
+  {q:'If an enumerator skips questions to save time, the supervisor should:', opts:['Allow it if daily targets are being met','Privately address it, explain the impact and review their previously submitted forms','Reduce their target permanently','Ignore it as long as the data looks reasonable'], ans:1},
+  {q:'CERP uses research to:', opts:['Make commercial investments in Pakistan','Provide evidence-based findings to improve government services and public policy','Directly manage government departments','Replace government employees with researchers'], ans:1},
+  {q:'Coordinating with local community leaders before surveys helps to:', opts:['Allow them to influence respondent answers','Build trust and reduce resistance to the survey process','Replace the project introduction process','Give leaders authority over the data'], ans:1},
+  {q:'A supervisor should flag issues to management:', opts:['Only at the end of the project','At the weekly report meeting','Immediately, as soon as issues arise','Only if they affect more than half the team'], ans:2},
+  {q:'What is the supervisor\'s role in ethical fieldwork?', opts:['Ethics is the responsibility of individual enumerators only','Reinforce ethical guidelines daily, model ethical behaviour and treat any violation seriously','Avoid discussing ethics in the field to save time','Only report ethics violations at the end of the project'], ans:1},
+  {q:'When a respondent complains about an enumerator\'s behaviour, the supervisor should:', opts:['Dismiss the complaint to protect the team','Listen respectfully, investigate and take appropriate action, then follow up with the respondent','Ask other enumerators what they think happened','Immediately dismiss the enumerator'], ans:1},
+  {q:'What should a supervisor do in their first week on the project?', opts:['Start fieldwork immediately without training','Attend training fully, build team rapport, study survey tools and plan for field challenges','Wait until the team is fully assembled before doing anything','Focus only on submitting the first batch of surveys'], ans:1},
+  {q:'Stronger enumerators should be assigned to:', opts:['The easiest areas so they finish quickly','More challenging areas, while also being used to support weaker team members','The same areas as weak enumerators to compensate','Management tasks instead of fieldwork'], ans:0},
+  {q:'What happens if an enumerator\'s area is flooded during fieldwork?', opts:['Continue working — missing data is worse than being unsafe','Immediately suspend work in that area, ensure safety and inform management','Submit estimated data for the missed households','Ask other enumerators to cover the area the same day'], ans:1},
+  {q:'How do supervisors build trust in communities that are resistant to surveys?', opts:['By threatening formal consequences for non-participation','By working with community leaders, using respectful introductions and personally demonstrating the approach','By offering financial incentives to respondents','By replacing enumerators with local volunteers'], ans:1},
+  {q:'What is the supervisor\'s responsibility regarding female enumerator safety?', opts:['Female enumerators must manage their own safety','Ensure they are paired appropriately, given defined hours and have emergency contact at all times','Assign them only to office-based tasks','Allow them to work alone if they prefer'], ans:1},
+  {q:'Why is it important for a supervisor to remain calm under pressure?', opts:['It impresses the project manager','Calm leadership helps the team stay productive and find solutions rather than panic','It means the supervisor does not have to make decisions','It reduces the number of surveys needed'], ans:1},
+  {q:'Which of the following best describes effective team communication?', opts:['Sending a single message at the start of the week','Clear daily instructions, quick responses to field problems, brief debriefs and an open respectful tone','Communicating only when there is an emergency','Letting enumerators communicate among themselves without supervisor involvement'], ans:1},
+  {q:'The difference between a good and poor field report is:', opts:['Good reports are longer','Good reports are clear, factual, cover key metrics and are submitted consistently on time','Good reports include personal opinions','Good reports only highlight successes'], ans:1},
+  {q:'Which approach is correct when an enumerator disagrees with the supervisor\'s decision?', opts:['The supervisor must always change their decision if challenged','The enumerator\'s view is never relevant','Listen respectfully, consider the point, explain the reasoning if unchanged, and maintain accountability','End the disagreement by reassigning the enumerator'], ans:2},
+  {q:'What should a supervisor prioritize when two areas need simultaneous coverage?', opts:['Cover both poorly rather than one well','Report the gap to management, prioritize the higher-target area and document the delay for the other','Ask enumerators to work extra hours without notice','Combine both areas into one and reduce the sample size'], ans:1},
+  {q:'What does the Field Supervisor do at the end of each day?', opts:['Go home immediately after field visits end','Review progress, check form quality, update the tracking sheet and submit a report to management','Call each respondent to verify their answers','Only count the number of forms collected'], ans:1},
+  {q:'What best defines the Field Supervisor\'s role in data quality?', opts:['Ensuring the data looks good even if it is not accurate','Actively monitoring, checking and correcting data before submission to ensure accuracy and completeness','Letting enumerators self-manage quality without interference','Only reviewing data at the end of the project'], ans:1}
+];
+
+/* ═══════════════════════════════════════════
+   Q&A LOGIC
+═══════════════════════════════════════════ */
+let role = 'enum';
+let currentCat = 'all';
+let opened = new Set();
+
+function showSection(sec) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach((b, i) => {
+    b.classList.toggle('active',
+      (i===0&&sec==='qa') || (i===1&&sec==='mcq') || (i===2&&sec==='pd'));
+  });
+}
+
+/* Project Details FAQ toggle */
+const pdFaqOpen = new Set();
+function togglePdFaq(idx) {
+  const card = document.getElementById('pdfaq-' + idx);
+  const ans  = document.getElementById('pdfaq-ans-' + idx);
+  const chev = card.querySelector('.pd-faq-chev');
+  if (pdFaqOpen.has(idx)) {
+    ans.style.maxHeight = '0px';
+    card.classList.remove('open');
+    pdFaqOpen.delete(idx);
+  } else {
+    ans.style.maxHeight = (ans.scrollHeight + 20) + 'px';
+    card.classList.add('open');
+    pdFaqOpen.add(idx);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   DATA COLLECTOR — 50 Q&A
+═══════════════════════════════════════════ */
+const dcQs = [
+  {cat:'intro',    q:'Tell us about yourself and why you are applying for the Data Collector role.',a:'My name is Azhar Khan. I have experience in fieldwork and data collection activities. I am detail-oriented, honest, and comfortable interacting with different types of people. I understand the importance of accurate data and I am committed to following all project guidelines professionally.'},
+  {cat:'intro',    q:'What do you know about the role of a Data Collector?',a:'A Data Collector is responsible for gathering accurate information from respondents through interviews, surveys, and observations. The main tasks include recording data correctly, maintaining confidentiality, using digital tools for data entry, and submitting reports to supervisors on time.'},
+  {cat:'project',  q:'What is the CERP SWM project and what is its purpose?',a:'The CERP SWM project is a Solid Waste Management research project conducted by the Centre for Economic Research in Pakistan in collaboration with the Lahore Waste Management Company. Its purpose is to study and improve waste collection, recycling, and sanitation systems in Lahore through accurate field research.'},
+  {cat:'project',  q:'What type of data will you collect in this project?',a:'I will collect data related to household waste practices, recycling habits, sanitation conditions, community opinions about cleanliness, and information about how waste is managed in different union councils of Lahore.'},
+  {cat:'skills',   q:'Why is accuracy important when collecting data?',a:'Accuracy is essential because research findings and policy decisions are based entirely on collected data. If data is incorrect or manipulated, it leads to wrong conclusions, wasted resources, and failed improvements in public services. I always double-check entries before submission.'},
+  {cat:'field',    q:'What tools will you use during data collection in the field?',a:'I will use mobile applications or tablets for digital data entry, paper survey forms as backup, observation sheets, and a pen and field notebook. I will ensure all devices are fully charged and forms are ready before going to the field each day.'},
+  {cat:'field',    q:'How will you introduce yourself to a respondent before starting data collection?',a:'I will greet them respectfully, introduce myself by name, explain that I am from CERP working with LWMC on a waste management research project, describe the purpose of the survey, and assure them that their information is completely confidential and will only be used for research.'},
+  {cat:'skills',   q:'How do you ensure the information you collect is reliable?',a:'I listen carefully, ask clear questions, read each question exactly as written, avoid leading the respondent toward any answer, clarify inconsistencies politely, and verify key responses by asking follow-up questions when something seems unclear.'},
+  {cat:'scenario', q:'What will you do if a respondent gives you contradictory answers during an interview?',a:'I will politely ask clarifying follow-up questions to understand their actual response without suggesting an answer. I will note the inconsistency in the remarks section and report it to my supervisor. I will never change a response to make it appear consistent.'},
+  {cat:'scenario', q:'A respondent refuses to participate in your survey. How do you respond?',a:'I will thank them politely for their time, explain briefly that participation is voluntary and the information is confidential, and if they are still unwilling, I will accept their decision respectfully. I will document the refusal properly and inform my supervisor.'},
+  {cat:'skills',   q:'What is informed consent and why is it important in data collection?',a:'Informed consent means the respondent agrees to participate after fully understanding what the survey is about and knowing they can refuse. It is important because it respects the respondent\'s rights, builds trust, and ensures the data is collected ethically and legally.'},
+  {cat:'field',    q:'How do you maintain confidentiality of respondent data?',a:'I never share respondent names or personal details with anyone outside the project team. I keep forms and devices secure at all times, do not discuss individual responses publicly, and follow all data privacy guidelines provided during training.'},
+  {cat:'scenario', q:'Your data entry device stops working in the middle of a field visit. What do you do?',a:'I will switch to paper forms immediately, document all remaining responses manually, inform my supervisor about the technical issue, and transfer the paper data properly when the device is repaired or replaced. I will not skip any responses or guess.'},
+  {cat:'skills',   q:'How do you handle a situation where you are not sure how to answer a respondent\'s question?',a:'I honestly tell the respondent that I am not certain and that I will check with my supervisor and follow up if needed. I never guess or give misleading information, as this could damage trust in the project and CERP\'s reputation.'},
+  {cat:'intro',    q:'What are your strongest qualities for this Data Collector role?',a:'My strongest qualities are attention to detail, patience, honesty, and the ability to communicate clearly with people from all backgrounds. I am disciplined, punctual, and committed to completing my assigned tasks accurately and on time every day.'},
+  {cat:'field',    q:'Are you comfortable traveling to different union councils across Lahore for fieldwork?',a:'Yes, I am fully comfortable traveling to any area in Lahore as required by the project schedule. I understand that fieldwork is mobile by nature and I am prepared to adjust my daily travel based on assigned areas and targets.'},
+  {cat:'scenario', q:'You notice that the data you previously recorded has an error. What do you do?',a:'I will correct it immediately using the proper method — crossing out with one line and initialing on paper forms, or editing on the digital form. I will inform my supervisor about the correction so the record is transparent and accurate.'},
+  {cat:'skills',   q:'How do you manage your time effectively when you have multiple respondents to visit in a day?',a:'I plan my route geographically before starting fieldwork to minimize travel time. I set estimated time per interview, track my progress throughout the day, and communicate with my supervisor early if something is causing delays so adjustments can be made.'},
+  {cat:'field',    q:'How will you behave professionally when visiting households for data collection?',a:'I will dress neatly and modestly, arrive on time, introduce myself clearly and politely, use a calm and respectful tone throughout, avoid personal opinions, not pressure anyone to answer, and thank the respondent for their time at the end of every interview.'},
+  {cat:'scenario', q:'What will you do if a respondent becomes hostile or aggressive during an interview?',a:'I will stay calm, speak politely, and try to de-escalate the situation without arguing or matching their tone. If the situation becomes unsafe, I will leave respectfully and report the incident to my supervisor with full details for follow-up.'},
+  {cat:'project',  q:'Who are the typical respondents you will interview in this CERP project?',a:'The typical respondents include household members from different union councils of Lahore, waste collection workers, informal recycling workers known as kabari workers, and community members who can provide information about local waste management practices.'},
+  {cat:'skills',   q:'What does research ethics mean for a Data Collector?',a:'Research ethics means being completely honest in data recording, respecting respondents\' privacy and dignity, never fabricating or altering responses, obtaining proper informed consent, and following all CERP project guidelines. Ethical data collection is the foundation of trustworthy research.'},
+  {cat:'scenario', q:'A household you need to visit is consistently locked across three attempts. What do you report?',a:'After making at least two to three visit attempts at different times of day, I will document each attempt with date, time, and address. I will then report the household as non-contactable to my supervisor with full documentation for a decision on how to proceed.'},
+  {cat:'skills',   q:'How do you record data for a respondent who cannot read or write?',a:'I read each question aloud clearly and in simple language, listen carefully to their verbal response, record their answer accurately myself, and confirm the response back to them before moving to the next question to ensure I captured it correctly.'},
+  {cat:'field',    q:'What is the importance of submitting your completed data forms daily?',a:'Daily submission ensures that data is reviewed and quality-checked in a timely manner, problems are caught early, the project stays on schedule, and no data is lost due to device failure or other unforeseen issues. Consistent submission is a key professional responsibility.'},
+  {cat:'scenario', q:'You are collecting data and realize a colleague nearby is fabricating responses. What do you do?',a:'This is a serious ethics violation. I will privately speak to the colleague first and make it clear this is unacceptable. If it continues, I will report it directly to my supervisor. The integrity of the entire research depends on every team member recording data honestly.'},
+  {cat:'project',  q:'Why is understanding the waste management context important for a Data Collector in this project?',a:'Understanding the project context helps me ask questions more naturally, understand why respondents may be hesitant, recognize relevant information volunteered by respondents, and explain the purpose confidently. A Data Collector who understands the project collects better and more contextual data.'},
+  {cat:'skills',   q:'How do you handle a language barrier when a respondent does not speak Urdu well?',a:'I will try to communicate using simple and clear language in Urdu or Punjabi. If the barrier is too significant for a reliable interview, I will document it and inform my supervisor so a suitable team member can be assigned to that household.'},
+  {cat:'scenario', q:'Your supervisor gives you a new area to cover in addition to your existing assignment. How do you respond?',a:'I will acknowledge the new assignment, assess whether both can be completed in the available time, and immediately communicate with my supervisor if the combined workload is not feasible. I will prioritize based on supervisor guidance and document my progress in both areas.'},
+  {cat:'skills',   q:'What does a fully completed data collection form look like?',a:'Every question has a response, there are no unexplained blank fields, answers are consistent and logical, names and dates are correctly recorded, remarks are written for any unusual responses, and the data collector\'s ID and submission date are clearly marked.'},
+  {cat:'intro',    q:'Why do you want to work on the CERP SWM project specifically?',a:'I want to contribute to research that directly improves public services in Lahore. This project combines fieldwork, community interaction, and meaningful data work — all areas I enjoy. I am also interested in gaining more experience with research-based data collection at a professional level.'},
+  {cat:'field',    q:'What will you carry with you on every field day?',a:'I will carry my official ID card, project introduction letter, charged mobile device or survey forms, pen, field notebook, supervisor contact number, and any area maps or assignment lists provided during briefing. Being prepared before leaving reduces problems in the field.'},
+  {cat:'scenario', q:'Halfway through an interview, the respondent says they want to stop. What do you do?',a:'I will immediately stop the interview respectfully, thank the respondent for their time, and not include any partial data in my submission. Participation is always voluntary. I will document the withdrawal and report it to my supervisor for proper recording.'},
+  {cat:'skills',   q:'How do you stay focused and motivated during long field days with many respondents?',a:'I remind myself of the importance of the research and its real impact on public services. I organize my day into manageable goals, take short structured breaks, stay hydrated, and maintain a positive professional mindset. Good preparation before the day also reduces stress significantly.'},
+  {cat:'project',  q:'What are Union Councils and why do they matter in this project?',a:'Union Councils are the smallest administrative divisions in Lahore. This project surveys multiple union councils to ensure the data represents different types of communities across the city, giving researchers a complete and accurate picture of waste management practices in Lahore.'},
+  {cat:'scenario', q:'A community member asks to see the survey questions before agreeing to participate. How do you respond?',a:'I will openly share the survey with them if there is no restriction against it, explain that the questions are about their waste management practices, and assure them the information is only used for research. Transparency builds trust and improves participation.'},
+  {cat:'skills',   q:'What is observation-based data collection and how does it differ from interviews?',a:'Observation-based data collection means recording what you directly see — such as the condition of waste collection points, cleanliness of streets, or waste disposal behaviour — without asking questions. Interviews rely on what respondents tell you. Both complement each other in research.'},
+  {cat:'field',    q:'How do you prepare for a field day the night before?',a:'I review my assignment list and target area, check that my device is fully charged and the survey app is working, ensure I have backup paper forms, confirm my supervisor\'s contact number, review any training notes for the survey questions, and plan my route to reduce travel time.'},
+  {cat:'intro',    q:'Are you available to attend the full 3 to 5 day training before the project begins?',a:'Yes, I am fully committed and available for all training days. I understand that training is essential for understanding the survey tools, project guidelines, quality standards, and ethical responsibilities before going into the field.'},
+  {cat:'scenario', q:'You complete your daily target early. What do you do with the remaining time?',a:'I will inform my supervisor of my completion, offer to assist with any pending tasks such as supporting a colleague in a difficult area, review my submitted forms for quality, or prepare materials for the next day. I do not leave the field without supervisor permission.'},
+  {cat:'skills',   q:'How important is punctuality for a Data Collector?',a:'Punctuality is extremely important. Respondents are more cooperative when visited at agreed or reasonable times. Late arrivals reduce productive fieldwork time, disrupt team coordination, and affect daily survey targets. Being on time reflects professionalism and respect for the project and the respondents.'},
+  {cat:'scenario', q:'You are told by a community leader that you need their permission before interviewing households. What do you do?',a:'I will explain politely that we are an independent research team and that respondent participation is voluntary. I will inform my supervisor immediately so they can manage the community relationship properly. I will not let community pressure compromise the independence of the data.'},
+  {cat:'skills',   q:'What is the difference between a data collection form and an observation sheet?',a:'A data collection form is used to record answers from respondents during structured interviews or surveys. An observation sheet is used to record what the researcher directly sees in the field — such as the state of waste collection points, cleanliness levels, or disposal behaviour — without interviewing anyone.'},
+  {cat:'project',  q:'What is the role of LWMC in this research project?',a:'LWMC, the Lahore Waste Management Company, is the government partner for this project. The research aims to provide LWMC and policymakers with evidence-based findings about waste management problems and solutions so that they can improve formal waste services in Lahore.'},
+  {cat:'intro',    q:'How do you handle rejection or repeated refusals during a field day?',a:'I remain professional and do not take refusals personally. Each refusal is documented properly and reported to the supervisor. I move to the next assignment and maintain a positive attitude throughout the day. Refusals are a normal and expected part of fieldwork.'},
+  {cat:'skills',   q:'Why is it important to follow the survey script exactly as written?',a:'Following the script ensures every respondent receives the same questions in the same way, which makes the data comparable and scientifically valid. Changing the wording, even slightly, can lead to different answers and introduce bias into the research results.'},
+  {cat:'scenario', q:'You arrive at a field location and the address does not match any household. What do you do?',a:'I will document the discrepancy clearly in my field notes with the location, time, and the exact issue. I will contact my supervisor for guidance. I will not skip the entry without documentation or guess which household was intended.'},
+  {cat:'skills',   q:'How do you verify that the information a respondent gives you is accurate?',a:'I ask follow-up questions to check for internal consistency, compare responses against other known information in the survey, look for logical connections between answers, and note anything that seems unusual in the remarks for supervisor review. I never alter responses to force consistency.'},
+  {cat:'intro',    q:'What will you do in your first week as a Data Collector on this project?',a:'I will attend all training sessions fully and take notes, ask questions about any unclear survey procedures, get familiar with my assigned areas by reviewing maps, practice the survey app on a test device, and build a comfortable working relationship with my supervisor and team members.'},
+  {cat:'intro',    q:'Why should CERP hire you as a Data Collector?',a:'I am honest, detail-oriented, disciplined, and committed to delivering accurate data. I have good communication skills, understand the importance of research ethics, and am fully available and motivated for this project. I will represent CERP professionally in every household I visit and take my data collection responsibilities seriously.'}
+];
+
+/* ═══════════════════════════════════════════
+   FIELD ASSISTANT — 50 Q&A
+═══════════════════════════════════════════ */
+const faQs = [
+  {cat:'intro',    q:'Tell us about yourself and why you are applying for the Field Assistant role.',a:'My name is Azhar Khan. I have experience supporting field teams in data collection and logistical coordination. I am organized, cooperative, and comfortable working under pressure. I understand that a Field Assistant plays a critical support role that keeps the entire team running smoothly.'},
+  {cat:'intro',    q:'What do you understand about the role of a Field Assistant?',a:'A Field Assistant supports supervisors and enumerators in field activities by managing logistics, arranging survey materials, helping with documentation, coordinating transportation, and assisting respondents to understand survey procedures. The role is about making sure the field team can do their work efficiently.'},
+  {cat:'project',  q:'What is the CERP SWM project and why is it important?',a:'The CERP SWM (Solid Waste Management) project is a research initiative by CERP in partnership with LWMC. It studies waste collection, recycling, and sanitation practices in Lahore. The findings will help improve public cleanliness and waste management policies across the city.'},
+  {cat:'skills',   q:'What organizational skills do you bring to this role?',a:'I am good at planning, prioritizing tasks, keeping records, and ensuring materials and equipment are ready before they are needed. I create checklists, track schedules, and follow up on pending tasks so that nothing is delayed or forgotten during fieldwork.'},
+  {cat:'field',    q:'How would you prepare survey materials and equipment before a field day?',a:'The evening or morning before, I will check that all survey forms or devices are ready and accounted for, batteries are charged, printed materials are organized by assignment area, and any required ID cards or letters are present for each team member. I will also confirm transportation arrangements.'},
+  {cat:'skills',   q:'How do you manage attendance and daily schedules for a field team?',a:'I maintain an attendance register, confirm with each team member about their assigned area and timing, note any absences and inform the supervisor immediately, and help adjust assignments if someone is unavailable so field targets are still met.'},
+  {cat:'scenario', q:'One enumerator calls in sick on the morning of a field day. As a Field Assistant, what do you do?',a:'I will immediately inform the supervisor, update the attendance record, check if any of their assigned areas can be redistributed among available team members, and ensure their survey materials are reallocated. I will also update the day\'s schedule accordingly.'},
+  {cat:'field',    q:'How do you coordinate transportation for field teams?',a:'I confirm the field areas the day before, arrange vehicles or communicate transport routes to team members, share pick-up times and locations, and follow up on the morning of fieldwork to ensure everyone reaches their assigned area on time. I also plan for backup transport if needed.'},
+  {cat:'skills',   q:'How do you support data organization and documentation in the field?',a:'I collect completed forms from enumerators, check that each form has the correct identifying information, organize them by area or team member, maintain a log of submitted forms, and hand them over to the supervisor for quality review. I ensure nothing is misplaced or lost.'},
+  {cat:'scenario', q:'A batch of survey forms goes missing before submission. What do you do?',a:'I will immediately inform the supervisor, retrace the steps of where the forms were last seen, check with all team members who handled them, and document the loss fully. If the forms cannot be found, I will report the affected surveys so re-collection can be arranged.'},
+  {cat:'skills',   q:'How do you help respondents understand survey procedures?',a:'I use simple and clear language to explain what the survey is about, why it is being done, and that participation is voluntary and confidential. I answer their basic questions patiently and refer more detailed questions to the enumerator or supervisor. I make respondents feel comfortable before the interview begins.'},
+  {cat:'field',    q:'How do you ensure that survey devices and forms are properly maintained?',a:'I check devices for battery levels, storage capacity, and app functionality at the start and end of each day. I keep forms in organized folders, away from moisture or damage. I report any technical problems to the supervisor immediately and maintain an equipment log.'},
+  {cat:'project',  q:'Who does the Field Assistant typically work alongside in the CERP project?',a:'The Field Assistant works closely with the Field Supervisor, Enumerators, and Data Collectors. The role is a support function that helps all these positions operate more effectively by handling logistical, administrative, and coordination tasks that would otherwise slow down data collection.'},
+  {cat:'scenario', q:'You realize that some enumerators have not been given the correct survey forms for their assigned area. What do you do?',a:'I will immediately identify which enumerators have the wrong forms, retrieve the correct forms and distribute them as quickly as possible, and inform the supervisor about the error and how it was resolved. I will review my material distribution checklist to prevent this from happening again.'},
+  {cat:'skills',   q:'How do you work effectively under pressure when there are multiple urgent tasks?',a:'I stay calm and prioritize tasks based on urgency and impact on fieldwork. I communicate clearly with the supervisor about what is being handled and what needs additional support. I focus on completing one task properly at a time rather than rushing multiple tasks with poor results.'},
+  {cat:'intro',    q:'What makes you suitable for the Field Assistant position?',a:'I am organized, flexible, reliable, and a strong team player. I understand that the success of fieldwork depends on strong logistical support, and I take that responsibility seriously. I am comfortable with both administrative tasks and hands-on field coordination.'},
+  {cat:'skills',   q:'How do you maintain records of daily field activities?',a:'I keep a daily field log that includes which areas were covered, how many surveys were submitted, any attendance issues, equipment problems, and any other notable events. This log is reviewed by the supervisor and helps the project management team track overall progress.'},
+  {cat:'scenario', q:'The supervisor is unavailable and a team member comes to you with an urgent field problem. What do you do?',a:'I will listen carefully to the problem, assess whether it is something I can resolve within my role — such as a materials or logistics issue — and handle it if so. If it requires supervisor decision-making authority, I will contact the supervisor by phone immediately and keep the team member informed.'},
+  {cat:'field',    q:'How do you assist in monitoring field operations?',a:'When required by the supervisor, I visit field areas to check that enumerators are in their assigned locations, observe whether survey procedures are being followed, note any issues such as access problems or respondent difficulties, and report back to the supervisor with a summary of my observations.'},
+  {cat:'skills',   q:'What record-keeping skills are essential for a Field Assistant?',a:'Essential record-keeping skills include maintaining accurate attendance logs, equipment inventories, form submission records, daily field activity summaries, and incident reports. Records must be clear, organized, and updated in real time so supervisors and managers can rely on them for decision-making.'},
+  {cat:'project',  q:'What are the main field activities you will support in the CERP SWM project?',a:'I will support household surveys, community interviews, waste collection point observations, team logistics, data form organization, device management, transportation coordination, scheduling, and daily reporting. My role is to ensure the field team has everything they need to collect accurate data efficiently.'},
+  {cat:'scenario', q:'You are responsible for distributing survey forms and you realize there are not enough for all team members. What do you do?',a:'I will immediately count exactly how many forms are available and how many are needed, inform the supervisor, and find the quickest solution — whether that is printing more forms, redistributing priority areas, or using digital forms as a substitute. I will document the shortage and how it was handled.'},
+  {cat:'skills',   q:'How do you communicate effectively with enumerators and supervisors?',a:'I communicate clearly, in simple language, and confirm understanding before ending a conversation. I am available throughout the day for team queries, respond quickly to supervisor instructions, and provide brief summaries of any issues or changes so the team always has current information.'},
+  {cat:'intro',    q:'Are you comfortable working in a mixed-gender team environment?',a:'Yes, I am fully comfortable and professional in mixed-gender work environments. I respect all team members equally, maintain appropriate conduct at all times, and focus on supporting the team\'s shared goals regardless of gender or background.'},
+  {cat:'field',    q:'How do you ensure that transportation arrangements do not delay fieldwork?',a:'I confirm transportation one day in advance, send reminders to drivers or team members on the morning of fieldwork, build in a buffer time before the scheduled departure, and have backup contact numbers for alternative transport in case of last-minute issues.'},
+  {cat:'scenario', q:'An enumerator reports that their assigned area is inaccessible due to road work. What do you do?',a:'I will inform the supervisor immediately and provide the enumerator with the closest alternative route or a temporary reassignment if available. I will document the access issue so management can adjust the field plan and reschedule the affected area.'},
+  {cat:'skills',   q:'How do you handle administrative tasks like preparing attendance sheets and daily logs?',a:'I prepare them in advance using standard templates, fill them in accurately and on time each day, double-check entries for errors, and submit them to the supervisor by the agreed time. I keep both physical and digital copies where possible to avoid data loss.'},
+  {cat:'project',  q:'Why is coordination between Field Assistants and Field Supervisors important?',a:'The Field Supervisor makes decisions about daily operations and quality, while the Field Assistant executes the logistical and administrative tasks that support those decisions. Poor coordination between them leads to delays, missing materials, and team confusion. Close coordination is what keeps the whole field operation running smoothly.'},
+  {cat:'scenario', q:'Two team members ask you for the same piece of equipment at the same time. How do you resolve it?',a:'I will check the priority of each task with the supervisor, allocate the equipment to the most urgent need first, and arrange an alternative solution for the second team member — such as a backup item or a revised schedule. I will communicate the resolution clearly to both parties.'},
+  {cat:'skills',   q:'What does "administrative support" mean in a field research context?',a:'Administrative support means handling all the non-survey tasks that keep the project running — such as preparing and distributing forms, managing attendance, tracking equipment, organizing submitted data, coordinating logistics, writing field logs, and assisting with any scheduling or communication needs of the team.'},
+  {cat:'intro',    q:'What is your experience with basic computer or mobile tasks?',a:'I am comfortable using mobile devices and basic computer applications for tasks such as maintaining attendance records, preparing simple logs, organizing digital files, and communicating via messaging apps. I can learn new project-specific software quickly with appropriate training.'},
+  {cat:'scenario', q:'The field team arrives at a location and realizes they forgot the survey forms at the office. What do you do?',a:'I will take immediate responsibility if the error was in my preparation, arrange for the forms to be delivered to the field as quickly as possible, and in the meantime ask team members to use backup digital forms if available. I will ensure this does not happen again by double-checking materials every morning.'},
+  {cat:'skills',   q:'How do you handle a situation where a team member is not following the daily schedule?',a:'I will speak to the team member politely and remind them of the schedule and their responsibilities. If the behaviour is persistent or affecting fieldwork, I will inform the supervisor with factual details. I maintain a supportive tone but understand that schedule compliance is essential for meeting project targets.'},
+  {cat:'field',    q:'How do you support the field team at the end of each field day?',a:'At the end of the day I collect all completed survey forms, check they are properly labelled and organized, note any missing or incomplete forms in the daily log, ensure devices are returned and charging, update the attendance and activity record, and submit the daily report to the supervisor.'},
+  {cat:'project',  q:'What challenges do you expect in supporting fieldwork across different union councils?',a:'Challenges may include transportation delays, varying road conditions, teams arriving in unfamiliar areas, materials being insufficient for larger than expected areas, and communication difficulties. I plan ahead by confirming logistics the day before and always having backup materials and contact numbers readily available.'},
+  {cat:'skills',   q:'How do you stay flexible when field plans change unexpectedly?',a:'I accept change as a normal part of fieldwork and adjust quickly without frustration. When plans change, I assess the new requirements, communicate the changes clearly to all affected team members, update all records, and ensure the supervisor is fully informed about what has changed and why.'},
+  {cat:'scenario', q:'You notice that a survey device being used by an enumerator has very low battery and they are far from a charging point. What do you do?',a:'I will immediately check if I have a portable charger or spare device available and provide it to the enumerator. If not, I will inform the supervisor so they can adjust that enumerator\'s schedule. I will add battery monitoring to my daily equipment checklist going forward.'},
+  {cat:'intro',    q:'Why is the Field Assistant role important to the success of a research project?',a:'The Field Assistant is the logistical backbone of the field team. Without proper materials, transportation, documentation, and support, even the best enumerators and supervisors cannot work effectively. A reliable Field Assistant prevents delays, reduces errors, and keeps the whole operation on track.'},
+  {cat:'skills',   q:'How do you prioritize tasks when everything seems urgent at the same time?',a:'I quickly assess which tasks directly impact fieldwork operations — such as missing materials or transportation failures — and address those first. I communicate my prioritization clearly to the supervisor so they can reallocate resources if needed. I stay calm and methodical rather than reactive.'},
+  {cat:'scenario', q:'A team member complains that the field area assigned to them is too large to complete in one day. What do you do?',a:'I will document the concern and immediately bring it to the supervisor\'s attention with the specific area details. The supervisor can then decide whether to reduce the assignment, extend the timeline, or provide additional support. I will also review the assignment plan to see if any adjustments can be made.'},
+  {cat:'field',    q:'How do you support enumerators who are new to fieldwork?',a:'I make sure they have all their materials ready, accompany them to their first area if possible, explain practical logistics like transportation and form submission procedures, check in with them during the day, and encourage them to ask questions freely. Support from a Field Assistant makes a big difference for new team members.'},
+  {cat:'skills',   q:'How do you ensure problem-solving does not slow down field operations?',a:'I try to anticipate common problems before they happen — such as equipment failures, transportation issues, or material shortages — by preparing backup plans. When a problem does arise, I act quickly and decisively, inform the supervisor, and resolve it without disrupting the team\'s momentum.'},
+  {cat:'intro',    q:'Are you available for the full project duration starting 8 June 2026?',a:'Yes, I am fully available and committed to the entire project duration. I understand that a Field Assistant needs to be consistently present to provide reliable support to the team, and I will ensure my availability from the first day of training through the end of the project.'},
+  {cat:'project',  q:'How does a Field Assistant contribute to data quality in a research project?',a:'While the Field Assistant does not collect data directly, they contribute to quality by ensuring enumerators have the correct forms and devices, tracking form submissions to prevent loss, flagging any observed issues in the field to the supervisor, and keeping operations organized so enumerators can focus fully on accurate data collection.'},
+  {cat:'scenario', q:'You are asked to monitor field operations in an area and you observe an enumerator skipping questions. What do you do?',a:'I will note the specific observation — which enumerator, which area, and what I observed — and report it to the Field Supervisor immediately and accurately. It is not my role to confront the enumerator directly about data quality issues, but I have a responsibility to report what I observe to the appropriate person.'},
+  {cat:'skills',   q:'What does a Field Assistant do when field conditions are difficult, such as extreme heat or difficult access?',a:'I adjust logistics accordingly — ensure team members have water and rest points scheduled, identify easier access routes in advance, communicate challenges to the supervisor, and help reschedule affected areas if necessary. Team welfare and field safety are part of my support responsibilities.'},
+  {cat:'intro',    q:'How do you build a good working relationship with the rest of the field team?',a:'I am respectful, cooperative, and approachable. I communicate openly, follow through on commitments, support my colleagues when they face difficulties, and maintain a positive attitude even on difficult days. Trust and reliability are the foundation of a strong team relationship.'},
+  {cat:'scenario', q:'At the end of the day, you realize two form sets were submitted with incorrect area labels. What do you do?',a:'I will immediately flag the error, identify which forms were mislabelled, correct the labels if the forms are still accessible, and inform the supervisor with full details. I will document the error and its correction, and review my form-labelling process to prevent similar mistakes.'},
+  {cat:'skills',   q:'Why is a cooperative attitude important for a Field Assistant?',a:'A Field Assistant interacts with the entire team — supervisors, enumerators, data collectors, and sometimes community members. A cooperative attitude ensures smooth communication, builds team morale, makes problem-solving easier, and creates an environment where everyone works towards the shared project goal together.'},
+  {cat:'intro',    q:'Why should CERP hire you as a Field Assistant for this project?',a:'I am organized, dependable, cooperative, and experienced in supporting field operations. I take logistical responsibilities seriously and understand that my role directly affects the team\'s ability to collect accurate data. I am committed to being a reliable support to the entire field team throughout the project.'}
+];
+
+function getQs(r) {
+  if (r==='enum') return enumQs;
+  if (r==='sup')  return supQs;
+  if (r==='dc')   return dcQs;
+  if (r==='fa')   return faQs;
+  return enumQs;
+}
+
+function switchRole(r) {
+  role = r;
+  const roleOrder = ['enum','sup','dc','fa'];
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', roleOrder[i]===r));
+  currentCat = 'all';
+  document.querySelectorAll('.filter-btn').forEach((b, i) => b.classList.toggle('active', i===0));
+  document.getElementById('search-box').value = '';
+  opened = new Set();
+  render();
+}
+
+function setCat(cat, el) {
+  currentCat = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function applyFilter() { render(); }
+
+function toggleQ(id) {
+  const ans = document.getElementById('ans-' + id);
+  const card = document.getElementById('card-' + id);
+  const chevron = document.getElementById('chev-' + id);
+  const isOpen = ans.style.maxHeight && ans.style.maxHeight !== '0px';
+  if (isOpen) {
+    ans.style.maxHeight = '0px';
+    card.classList.remove('open');
+    chevron.classList.remove('open');
+    opened.delete(id);
+  } else {
+    ans.style.maxHeight = (ans.scrollHeight + 40) + 'px';
+    card.classList.add('open');
+    chevron.classList.add('open');
+    opened.add(id);
+  }
+  updateStats();
+}
+
+function updateStats() {
+  const qs = getQs(role);
+  const done = opened.size;
+  const pct = Math.round((done / qs.length) * 100);
+  document.getElementById('st-total').textContent = qs.length;
+  document.getElementById('st-ans').textContent = done;
+  document.getElementById('st-pct').textContent = pct + '%';
+  document.getElementById('prog-bar').style.width = pct + '%';
+}
+
+function render() {
+  const qs = getQs(role);
+  const search = document.getElementById('search-box').value.toLowerCase();
+  const filtered = qs.filter(q => {
+    return (currentCat === 'all' || q.cat === currentCat) &&
+           (!search || q.q.toLowerCase().includes(search) || q.a.toLowerCase().includes(search));
+  });
+  const list = document.getElementById('q-list');
+  if (!filtered.length) {
+    list.innerHTML = '<div class="no-results">No questions match your search. Try a different filter or keyword.</div>';
+    updateStats(); return;
+  }
+  list.innerHTML = filtered.map(q => {
+    const gi = qs.indexOf(q);
+    const id = role + '-' + gi;
+    const isOpen = opened.has(id);
+    return `<div class="q-card${isOpen?' open':''}" id="card-${id}">
+      <div class="q-head" onclick="toggleQ('${id}')">
+        <span class="q-num">Q${gi+1}</span>
+        <span class="q-text">${q.q}</span>
+        <span class="q-pill pill-${q.cat}">${catLabels[q.cat]}</span>
+        <span class="q-chevron${isOpen?' open':''}" id="chev-${id}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </span>
+      </div>
+      <div class="q-ans" id="ans-${id}" style="max-height:${isOpen?'600px':'0px'};">
+        <div class="q-ans-inner">
+          <div class="ans-label">Sample Answer</div>
+          <div class="ans-text">${q.a}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  updateStats();
+}
+
+/* ═══════════════════════════════════════════
+   MCQ DATA — DATA COLLECTOR (50)
+═══════════════════════════════════════════ */
+const dcMcqs = [
+  {q:'What is the primary responsibility of a Data Collector?',opts:['Managing the field team budget','Gathering accurate information from respondents through surveys and interviews','Writing the final research report','Supervising enumerators in the field'],ans:1},
+  {q:'What does CERP stand for?',opts:['Centre for Educational Reform in Punjab','Centre for Economic Research in Pakistan','Commission for Environmental Research and Policy','Council for Economic Research and Planning'],ans:1},
+  {q:'What does LWMC stand for?',opts:['Lahore Water Management Company','Lahore Works and Maintenance Corporation','Lahore Waste Management Company','Lahore Welfare and Municipal Committee'],ans:2},
+  {q:'Which project is this Data Collector role associated with?',opts:['Urban transport research in Karachi','Solid Waste Management research in Lahore','School enrolment study in Islamabad','Health survey in Peshawar'],ans:1},
+  {q:'What does "informed consent" mean in data collection?',opts:['The supervisor approves the data before submission','The respondent voluntarily agrees to participate after understanding the survey purpose','The government gives written permission for fieldwork','The team leader signs off on each interview'],ans:1},
+  {q:'Which of the following is a correct tool used by a Data Collector in the field?',opts:['Laptop with internet connection only','Mobile application or tablet with survey software','Camera and video recorder','Printed newspaper questionnaire'],ans:1},
+  {q:'What should a Data Collector do if a respondent refuses to participate?',opts:['Pressure them politely until they agree','Record their name and report them to authorities','Thank them respectfully, document the refusal, and inform the supervisor','Skip the household without any record'],ans:2},
+  {q:'What is research ethics for a Data Collector?',opts:['Completing surveys as fast as possible','Recording data honestly, respecting privacy, obtaining consent, and never fabricating responses','Getting the highest number of surveys done per day','Choosing which questions to ask based on personal judgment'],ans:1},
+  {q:'How should a Data Collector correct a mistake on a paper survey form?',opts:['Use correction fluid to erase it completely','Tear the page and start fresh','Cross out with one line, initial it, and write the correct response','Ask the respondent to correct it themselves'],ans:2},
+  {q:'What is the importance of submitting completed forms daily?',opts:['To get paid faster','So the supervisor can review quality early, catch problems, and prevent data loss','To prove attendance','To reduce the number of forms carried in the field'],ans:1},
+  {q:'If a respondent gives inconsistent answers during an interview, a Data Collector should:',opts:['Change the answer to something logical','Submit the form as-is and hope no one notices','Ask polite clarifying follow-up questions and note the inconsistency in remarks','End the interview immediately'],ans:2},
+  {q:'What does maintaining respondent confidentiality mean?',opts:['Never telling the supervisor anything about the interview','Not sharing personal respondent information with anyone outside the project team','Keeping the survey questions secret from respondents','Submitting anonymous forms without any ID codes'],ans:1},
+  {q:'If a Data Collector\'s device runs out of battery mid-interview, they should:',opts:['Guess the remaining responses from memory','End the interview and go home','Switch to paper backup forms and inform the supervisor','Ask the respondent to wait until the device charges'],ans:2},
+  {q:'Who are the typical respondents in the CERP SWM project?',opts:['Only LWMC government staff','Household members, waste collection workers, and informal recyclers across Lahore','Only wealthy households in central Lahore','School teachers and principals'],ans:1},
+  {q:'Why should a Data Collector follow the survey script exactly as written?',opts:['To impress the supervisor with memorisation','To ensure every respondent gets the same questions so data is comparable and unbiased','To complete surveys faster by skipping unnecessary words','To reduce the time spent per interview'],ans:1},
+  {q:'What should a Data Collector do when they are unsure how to answer a respondent\'s question about the project?',opts:['Guess an answer confidently','Tell the respondent the project is confidential and refuse to answer','Honestly say they are not sure and will check with their supervisor','Change the subject and continue the survey'],ans:2},
+  {q:'What is back-checking in research fieldwork?',opts:['Reviewing your own notes at the end of each day','Re-visiting a sample of respondents to verify the accuracy of previously collected data','Checking survey forms for spelling errors only','A daily briefing with the supervisor before fieldwork'],ans:1},
+  {q:'How should a Data Collector record data for a respondent who cannot read or write?',opts:['Skip that household and find a literate respondent','Ask a family member to fill the form instead','Read questions aloud, listen to verbal responses, and record the answers accurately themselves','Hand the form to the respondent and wait for them to complete it'],ans:2},
+  {q:'What is the correct action if a household is locked across three separate visit attempts?',opts:['Mark it as completed to avoid a gap in the data','Force entry and conduct the interview','Record each attempt with date and time, then report the household as non-contactable to the supervisor','Stop fieldwork in that area permanently'],ans:2},
+  {q:'What does SWM stand for in the CERP SWM Project?',opts:['Social Welfare Management','Solid Waste Management','Survey Work Management','Sanitation and Water Monitoring'],ans:1},
+  {q:'What is the main difference between interview-based and observation-based data collection?',opts:['There is no difference — both mean the same thing','Interviews collect spoken responses from respondents; observations record what the researcher directly sees in the field','Observations are done only in the office; interviews are done in the field','Interviews require a supervisor present; observations can be done alone'],ans:1},
+  {q:'A community leader tries to tell a Data Collector what answers to record. What should the Data Collector do?',opts:['Follow the community leader\'s instructions to maintain local cooperation','Politely refuse, explain that responses must come directly from respondents, and report the interaction to the supervisor','Accept some suggestions to keep the community leader happy','Stop fieldwork in that area and wait for new instructions'],ans:1},
+  {q:'How does a Data Collector verify that the data they collected is accurate?',opts:['By comparing it to data from other projects','By asking follow-up questions, checking internal consistency, and noting unusual responses for supervisor review','By submitting all forms and waiting for management feedback','By only recording responses that match expected answers'],ans:1},
+  {q:'Why is punctuality important for a Data Collector on a field day?',opts:['Late arrivals do not matter as long as targets are eventually met','Punctuality reflects professionalism, keeps team operations smooth, and ensures daily targets can be completed on time','Being on time is optional in fieldwork','It is only important for supervisors, not data collectors'],ans:1},
+  {q:'What should a Data Collector carry on every field day?',opts:['Only a mobile phone','ID card, project letter, charged device or survey forms, pen, field notebook, and supervisor contact','Just the survey forms','A laptop and portable printer'],ans:1},
+  {q:'If a household withdraws consent halfway through an interview, the Data Collector should:',opts:['Quickly finish the remaining questions before they change their mind','Submit the partial data collected so far','Stop immediately, not submit partial data, and document the withdrawal for the supervisor','Ask the respondent to at least answer five more questions before stopping'],ans:2},
+  {q:'What is the role of LWMC in this research project?',opts:['LWMC directly employs all Data Collectors','LWMC is the government partner whose waste management operations are being researched','LWMC pays the salaries of the research team','LWMC designs the survey questionnaire'],ans:1},
+  {q:'How should a Data Collector handle a language barrier with a respondent?',opts:['Guess the responses and record something plausible','Use simple Urdu or Punjabi and if still unable to communicate effectively, inform the supervisor for reassignment','Skip the household without any record','Ask a bystander to translate without checking with the supervisor'],ans:1},
+  {q:'What is the difference between a data collection form and an observation sheet?',opts:['They are the same — both record interview responses','A data collection form records interview responses; an observation sheet records what the researcher directly sees in the environment','Observation sheets are only used by supervisors','Data collection forms are digital only; observation sheets are always paper'],ans:1},
+  {q:'Why is following up on missed visits important in data collection?',opts:['To get extra pay for additional visits','To recover missed data, reduce gaps in the dataset, and maintain the quality of research findings','To prove to the supervisor that targets were attempted','Follow-up is optional if daily targets are met'],ans:1},
+  {q:'What should a Data Collector do if they observe a colleague fabricating survey responses?',opts:['Ignore it — it is not their responsibility','Join in to save time','Speak to the colleague privately first, then report it to the supervisor if it continues','Report it to the media'],ans:2},
+  {q:'Which of the following is NOT a responsibility of a Data Collector?',opts:['Conducting interviews with respondents','Recording information accurately','Supervising and managing other field staff','Maintaining confidentiality of respondents'],ans:2},
+  {q:'What does "attention to detail" mean in the context of data collection?',opts:['Spending extra time writing long survey notes','Carefully checking each response for completeness, accuracy, and consistency before submitting','Reviewing other team members\' work without permission','Recording only the details the supervisor will check'],ans:1},
+  {q:'If a Data Collector finishes their daily target early, what should they do?',opts:['Leave the field immediately','Inform the supervisor and offer to assist with pending tasks or review submitted forms for quality','Start on tomorrow\'s assignment without supervisor approval','Take an extended break'],ans:1},
+  {q:'What is the purpose of the remarks section on a survey form?',opts:['A place to write personal opinions about respondents','To record unusual responses, inconsistencies, or any relevant context that does not fit standard answer fields','To list complaints about the survey process','To note the enumerator\'s personal evaluation of the respondent'],ans:1},
+  {q:'What is the smallest administrative unit in Lahore where field surveys are conducted?',opts:['District','Tehsil','Union Council','Neighbourhood'],ans:2},
+  {q:'How should a Data Collector prepare the night before a field day?',opts:['No preparation is needed — just arrive on time','Review the assignment, check device charge, confirm backup forms, plan the route, and review supervisor instructions','Prepare by studying historical data from previous surveys','Submit the next day\'s survey forms in advance'],ans:1},
+  {q:'What is the role of Union Councils in the context of this project?',opts:['Union Councils manage the project budget','They are the administrative units where field surveys are conducted to capture diverse urban waste management data','Union Councils hire and pay the Data Collectors','They are the organizations that analyze the collected data'],ans:1},
+  {q:'Which of the following best describes what CERP does?',opts:['It builds waste collection vehicles for LWMC','It conducts research, surveys, and analysis to improve public policy and government services in Pakistan','It directly manages garbage collection in Lahore','It trains LWMC government employees'],ans:1},
+  {q:'What should a Data Collector do if a community leader tries to block access to households?',opts:['Agree and skip the entire area','Attempt to negotiate independently with the community leader','Immediately report the situation to the supervisor and follow their guidance','Leave the area and mark all households as completed'],ans:2},
+  {q:'How many visit attempts should a Data Collector make before marking a household as non-contactable?',opts:['One attempt is enough','At least two to three attempts at different times of day','Five or more attempts on the same day','Unlimited attempts until the household is available'],ans:1},
+  {q:'Why is it important that a Data Collector presents themselves professionally in the field?',opts:['Professional appearance increases survey completion speed','Professional presentation builds trust with respondents, reflects positively on CERP, and improves interview outcomes','It is required by LWMC government regulations','It helps Data Collectors get better food allowances'],ans:1},
+  {q:'What should a Data Collector do if they realize they recorded an incorrect response after leaving a household?',opts:['Leave the error since the respondent is already gone','Correct it from memory without returning','Return to the household to verify the correct answer if possible, and inform the supervisor','Submit the incorrect data and note it in the remarks'],ans:2},
+  {q:'What is the primary goal of the CERP SWM research project?',opts:['To privatize waste collection in Lahore','To improve waste collection, recycling systems, and sanitation in Lahore through evidence-based research','To punish informal waste workers for illegal dumping','To reduce the number of LWMC employees'],ans:1},
+  {q:'If a Data Collector receives instructions that conflict with research ethics guidelines, they should:',opts:['Follow the instructions without question since they come from management','Follow the unethical instruction but note it in the remarks','Raise the concern with their supervisor immediately and not proceed with unethical data collection','Follow only the parts of the instruction that seem acceptable'],ans:2},
+  {q:'What does "data integrity" mean?',opts:['Data is stored in a secure digital system only','All collected data is accurate, complete, consistent, and has not been altered or fabricated','Data is submitted within 24 hours of collection','The survey was completed without any blank fields'],ans:1},
+  {q:'Which of these is a sign that a Data Collector is doing their job well?',opts:['Completing surveys very quickly with no questions asked','Consistently submitting complete, accurate, and consistently formatted forms with no unexplained blanks or errors','Having the highest number of refusals handled in the team','Never speaking to the supervisor during fieldwork'],ans:1},
+  {q:'What should a Data Collector do if they observe unhygienic or unsafe waste dumping during a field visit?',opts:['Document it as part of the observation and report it to the supervisor — do not intervene personally','Report it to the police immediately','Photograph it and post it on social media','Stop the fieldwork day and return to the office'],ans:0},
+  {q:'Why must a Data Collector never guess or fill in a response from memory after leaving a household?',opts:['Because supervisors always know when guesses are made','Because guessed data introduces inaccuracy and bias into the research, making findings unreliable','Because it is considered rude to the respondent','Because it reduces the daily survey count'],ans:1},
+  {q:'Why should CERP hire you as a Data Collector?',opts:['Because you need the money urgently','Because you live closest to the field area','Because you are honest, detail-oriented, follow guidelines, communicate respectfully, and are committed to accurate data collection','Because you already know all the survey answers'],ans:2}
+];
+
+/* ═══════════════════════════════════════════
+   MCQ DATA — FIELD ASSISTANT (50)
+═══════════════════════════════════════════ */
+const faMcqs = [
+  {q:'What is the primary role of a Field Assistant in a research project?',opts:['Independently collecting survey data from respondents','Supporting supervisors and enumerators through logistics, coordination, and administrative tasks','Writing the research analysis report','Managing the project\'s financial accounts'],ans:1},
+  {q:'Which organization is CERP collaborating with for the SWM project?',opts:['WASA','KMC','LWMC','LESCO'],ans:2},
+  {q:'What does SWM stand for in the CERP SWM Project?',opts:['Social Welfare Management','Survey Work Monitoring','Solid Waste Management','Sanitation and Water Maintenance'],ans:2},
+  {q:'A Field Assistant is responsible for arranging survey materials. Which of the following is NOT a survey material?',opts:['Survey forms','Charged tablets or mobile devices','Final research publication copies','Field notebooks and pens'],ans:2},
+  {q:'If an enumerator calls in sick on a field day, what should the Field Assistant do first?',opts:['Cover the enumerator\'s area personally without informing anyone','Inform the supervisor immediately and update the attendance record','Cancel fieldwork for the day','Assign the sick enumerator\'s work to yourself without supervisor approval'],ans:1},
+  {q:'What is the Field Assistant\'s role in managing team attendance?',opts:['Attendance is entirely the supervisor\'s responsibility','The Field Assistant maintains an attendance register, confirms each member\'s assignment, and reports absences to the supervisor','Field Assistants only track their own attendance','Attendance is managed automatically by the mobile app'],ans:1},
+  {q:'How should a Field Assistant prepare transportation for field teams?',opts:['Arrange transport on the morning of fieldwork without prior planning','Confirm field areas the day before, arrange vehicles, share pick-up times, and have a backup plan ready','Transport is the responsibility of each individual team member','Only arrange transport for the supervisor'],ans:1},
+  {q:'What does "administrative support" mean in a field research context?',opts:['Doing the supervisor\'s personal tasks','Handling non-survey tasks like attendance, equipment tracking, form distribution, logistics coordination, and daily logs','Writing the research methodology','Recruiting new enumerators'],ans:1},
+  {q:'Which of the following best describes a Field Assistant\'s contribution to data quality?',opts:['Field Assistants directly collect data so their impact on quality is direct','Field Assistants contribute indirectly by ensuring enumerators have correct materials, forms are not lost, and operations are organized','Field Assistants have no responsibility for data quality','Field Assistants review and approve all survey data before submission'],ans:1},
+  {q:'If a batch of completed survey forms goes missing, the Field Assistant should:',opts:['Replace the missing forms with blank ones and submit them','Inform the supervisor immediately, retrace where the forms were last seen, and document the loss fully','Ignore it if only a few forms are missing','Ask respondents to redo the survey via phone'],ans:1},
+  {q:'What does a Field Assistant do at the end of each field day?',opts:['Leave immediately after the last field visit','Collect completed forms, check labels, organize them by area, update the daily log, ensure devices are charging, and submit the day\'s report','Only count the number of surveys submitted','Send a single text message to the supervisor'],ans:1},
+  {q:'A Field Assistant notices that enumerators received the wrong survey forms for their area. What is the correct action?',opts:['Do nothing — enumerators can adapt to any form','Identify which enumerators have wrong forms, distribute correct ones as fast as possible, and report the error to the supervisor','Ask enumerators to skip the incorrect sections','Mark the wrong forms as correct in the daily log'],ans:1},
+  {q:'Which of these is a key skill for a Field Assistant?',opts:['Advanced data analysis','Organizational skills, record-keeping, and team coordination','Financial auditing','Survey question design'],ans:1},
+  {q:'What should a Field Assistant do if two team members request the same piece of equipment at the same time?',opts:['Give it to whoever asked first and ignore the second request','Check with the supervisor for priority, allocate to the urgent need, and arrange an alternative for the other person','Flip a coin to decide','Ask both team members to share the equipment simultaneously'],ans:1},
+  {q:'How does a Field Assistant support new enumerators joining the team?',opts:['New enumerators must figure things out independently','By ensuring they have all materials, explaining logistics, helping with transport, and being available for practical questions throughout the day','By conducting their surveys for them on the first day','By giving them extra work to learn faster'],ans:1},
+  {q:'What is the purpose of a daily field activity log maintained by the Field Assistant?',opts:['It is used only for salary calculations','It records areas covered, surveys submitted, attendance, equipment issues, and key events so supervisors and management have an accurate progress record','It replaces the need for supervisor reports','It is shared directly with respondents'],ans:1},
+  {q:'If a survey device has very low battery during fieldwork, what should the Field Assistant do?',opts:['Tell the enumerator to finish quickly before it dies','Provide a portable charger or spare device if available and inform the supervisor; add battery checks to the morning routine going forward','Collect the device and return to the office to charge it, halting fieldwork','Ask the respondent to provide a charger'],ans:1},
+  {q:'What does "flexible and cooperative attitude" mean for a Field Assistant?',opts:['Agreeing with everything the supervisor says without question','Adjusting quickly and without frustration to unexpected changes while maintaining open communication with the team','Being flexible about which tasks you choose to do','Cooperating only when specifically asked'],ans:1},
+  {q:'If the supervisor is unavailable and a team member comes with an urgent logistics problem, the Field Assistant should:',opts:['Tell the team member to wait until the supervisor returns','Resolve logistics-level issues within their authority and contact the supervisor immediately for anything requiring their decision-making','Ignore the problem until the supervisor is available','Make a major decision independently without any consultation'],ans:1},
+  {q:'What is the Field Assistant\'s responsibility regarding equipment maintenance?',opts:['Equipment maintenance is only the supervisor\'s job','Field Assistants check device battery and functionality at the start and end of each day, keep forms organized, and report any technical issues immediately','Field Assistants purchase new equipment when something breaks','Equipment is maintained only by the research organization\'s IT team'],ans:1},
+  {q:'How should a Field Assistant communicate changes in the field plan to the team?',opts:['Post the changes in a group chat and assume everyone read it','Communicate changes clearly to all affected team members directly, confirm their understanding, and update all relevant records','Only tell the senior enumerator and let them pass the information along','Wait until the end of the day to communicate changes'],ans:1},
+  {q:'Why is it important for a Field Assistant to confirm logistics one day in advance?',opts:['It is not important — same-day arrangements work fine','Advance confirmation prevents morning delays, ensures all materials are ready, and gives time to arrange alternatives if something is unavailable','It is required by LWMC regulations only','To allow the supervisor to take the day off'],ans:1},
+  {q:'A Field Assistant observes an enumerator skipping questions during an interview. What should they do?',opts:['Confront the enumerator publicly in front of respondents','Note the specific observation accurately and report it to the Field Supervisor — data quality issues are the supervisor\'s authority to address','Ignore it since data quality is not the Field Assistant\'s responsibility','Fill in the skipped questions themselves based on assumptions'],ans:1},
+  {q:'How does a Field Assistant help when field conditions are difficult, such as extreme heat?',opts:['Cancel fieldwork and reschedule independently','Adjust logistics by ensuring rest points and water are available, identify easier routes, communicate challenges to the supervisor, and help reschedule affected areas if needed','Ask team members to work faster to finish before conditions worsen','Field Assistants have no role in managing field conditions'],ans:1},
+  {q:'Which of the following is NOT an administrative support task for a Field Assistant?',opts:['Preparing attendance sheets','Maintaining equipment inventory logs','Analyzing and interpreting survey data for the research report','Organizing completed survey forms by area'],ans:2},
+  {q:'What should a Field Assistant do if they realize a team arrived at the field without their survey forms?',opts:['Tell them to return home for the day','Arrange immediate delivery of the forms and explore digital backup options; take steps to prevent this from happening again','Ask enumerators to conduct interviews from memory','Report the team members to management for dismissal'],ans:1},
+  {q:'What role does a Field Assistant play in coordinating between the supervisor and enumerators?',opts:['The Field Assistant bypasses the supervisor and communicates directly with management','They transmit instructions from the supervisor to the team clearly and report any issues or changes back to the supervisor accurately','Field Assistants should not get involved in team communication','The Field Assistant only coordinates transport, not people'],ans:1},
+  {q:'How does a Field Assistant prioritize tasks when multiple urgent issues arise simultaneously?',opts:['Address the easiest task first to build momentum','Assess which issues directly impact fieldwork operations, handle those first, and communicate the prioritization clearly to the supervisor','Attempt to solve all tasks at once regardless of quality','Ask a team member to handle all urgent tasks instead'],ans:1},
+  {q:'What is the importance of record-keeping for a Field Assistant?',opts:['Records are only needed for the final project report','Accurate records allow supervisors to track progress, audit quality, resolve disputes, and make informed decisions about fieldwork operations','Records are kept only to satisfy government requirements','Record-keeping is optional if the supervisor has a good memory'],ans:1},
+  {q:'If a team member is consistently not following the daily schedule, the Field Assistant should:',opts:['Dismiss them from the field team personally','Politely remind them of their responsibilities; if behaviour continues, report it factually to the supervisor','Ignore it since schedule management is only the supervisor\'s job','Adjust the entire team\'s schedule to accommodate that person'],ans:1},
+  {q:'What does coordinating transportation mean for a Field Assistant?',opts:['Owning and driving a vehicle for the team','Arranging vehicles or transport routes, confirming timings, and having backup plans so the team reaches their areas on time every day','Paying for all field travel from personal funds','Booking taxis for the supervisor only'],ans:1},
+  {q:'What is a Field Assistant\'s responsibility if they notice two form sets were mislabelled before submission?',opts:['Submit them as-is and hope the supervisor does not notice','Immediately correct the labels if the forms are accessible, inform the supervisor with full details, document the error, and review the labelling process going forward','Ask the enumerators who submitted them to fix the labels','Discard the mislabelled forms and collect new ones'],ans:1},
+  {q:'How should a Field Assistant handle a situation where the field area assigned to a team is too large to cover in one day?',opts:['Tell the team to work faster without informing anyone','Document the concern and bring it to the supervisor immediately with specific area details so they can decide on adjustments','Reduce the survey sample size independently','Ask enumerators to skip difficult households to finish on time'],ans:1},
+  {q:'What is the Field Assistant\'s role when monitoring field operations in the supervisor\'s absence?',opts:['Make major operational decisions independently','Observe and note field conditions, check team positions, and report observations accurately to the supervisor — without overstepping their authority level','Conduct interviews themselves to fill gaps in data','Tell enumerators to stop working until the supervisor returns'],ans:1},
+  {q:'A Field Assistant\'s attitude towards unexpected changes in the field plan should be:',opts:['Frustrated and resistant, since changes mean more work','Calm and adaptive — quickly adjust logistics, communicate changes clearly, and update all records without disrupting team morale','Passive — wait for the supervisor to handle all changes personally','Dismissive — minor changes do not need to be documented'],ans:1},
+  {q:'Why is the Field Assistant role described as the "logistical backbone" of the field team?',opts:['Because they conduct the most surveys per day','Because without proper materials, transport, documentation, and administrative support, even the best enumerators cannot work effectively','Because they have the highest salary in the team','Because they design the survey questionnaire'],ans:1},
+  {q:'How does a Field Assistant support data quality without directly collecting data?',opts:['By reviewing and editing enumerators\' responses','By ensuring correct materials are distributed, forms are not lost, submission is tracked, and any observed issues are reported to the supervisor promptly','By recollecting data from households that were already visited','Data quality is not within a Field Assistant\'s scope at all'],ans:1},
+  {q:'What should a Field Assistant do if a vehicle arranged for the field team breaks down on the way to the survey area?',opts:['Cancel the field day and report a full day of fieldwork anyway','Contact the supervisor immediately, arrange alternative transport as quickly as possible, and keep the team informed','Tell team members to find their own way and meet at the field location','Wait for the vehicle to be repaired without informing anyone'],ans:1},
+  {q:'What does "building a good working relationship with the team" mean for a Field Assistant?',opts:['Being everyone\'s friend and avoiding conflict at all costs','Being respectful, reliable, approachable, following through on commitments, and maintaining a positive professional attitude that builds trust over time','Sharing personal opinions about the project with all team members','Being strict and formal to maintain authority'],ans:1},
+  {q:'Which document should a Field Assistant update every morning before fieldwork begins?',opts:['The final research report','The attendance sheet, equipment checklist, and daily assignment list','The survey questionnaire','The government application form'],ans:1},
+  {q:'What is the correct response if a Field Assistant discovers there are not enough printed survey forms for the day?',opts:['Ask enumerators to share forms by collecting data on fewer respondents each','Immediately count available forms, inform the supervisor, and explore solutions such as printing more or using digital forms','Proceed with fieldwork and hope supervisors do not notice','Ask respondents to answer questions verbally without any recording'],ans:1},
+  {q:'How should a Field Assistant respond to a team member who seems stressed or overwhelmed during fieldwork?',opts:['Ignore it — personal stress management is the individual\'s responsibility','Offer a practical solution such as helping redistribute their workload, inform the supervisor if the issue is affecting performance, and be supportive','Tell them to take the rest of the day off without supervisor approval','Report them to management for poor performance'],ans:1},
+  {q:'What is a Field Assistant\'s role in ensuring female team members\' safety during fieldwork?',opts:['Safety is entirely the supervisor\'s responsibility','Support the supervisor in ensuring female team members are paired appropriately, have defined working hours, have emergency contacts, and are not sent to locations alone','Ask female team members to manage their own safety','Only provide safety support if specifically instructed by the project manager'],ans:1},
+  {q:'If a Field Assistant is asked to monitor a field area and observes a respondent being pressured by an enumerator, what should they do?',opts:['Intervene and take over the interview themselves','Note the exact observation and report it immediately to the Field Supervisor for appropriate action','Ignore it since the interview will likely finish soon','Speak to the respondent privately after the enumerator leaves'],ans:1},
+  {q:'What makes a Field Assistant different from a Data Collector?',opts:['There is no difference — both roles are the same','A Field Assistant focuses on logistics, coordination, and administrative support; a Data Collector focuses on directly gathering data through interviews and surveys with respondents','A Field Assistant collects data while a Data Collector organizes it in the office','A Data Collector supervises the team while a Field Assistant conducts interviews'],ans:1},
+  {q:'What should a Field Assistant do at the start of each field day?',opts:['Go directly to the field without any preparation','Confirm team attendance, distribute materials and assignments, check equipment, confirm transport, and brief the team on any updates or changes to the plan','Wait for the supervisor to initiate all preparation tasks','Hand out forms and immediately leave for their own assignment'],ans:1},
+  {q:'How does a Field Assistant help the supervisor prepare daily progress reports?',opts:['By writing the entire report independently','By providing accurate attendance records, form submission counts, equipment status, and field observations so the supervisor has all the information needed to compile the report','By submitting reports directly to management without supervisor review','Daily reports are not a Field Assistant\'s concern'],ans:1},
+  {q:'Why is a cooperative attitude especially important for a Field Assistant compared to other field roles?',opts:['Because Field Assistants work alone without supervision','Because a Field Assistant interacts with the entire team — supervisors, enumerators, data collectors, and sometimes community members — so cooperation is essential for smooth daily operations','Cooperative attitude is equally important for all roles','It is important only when working directly with respondents'],ans:1},
+  {q:'What does a Field Assistant do when field targets are not being met due to external challenges?',opts:['Independently reduce the survey targets for the day','Assess the cause, communicate it to the supervisor with specific details, suggest logistical solutions within their scope, and document the challenge and response in the daily log','Tell enumerators to work overtime without supervisor approval','Submit whatever data was collected and report 100% completion'],ans:1},
+  {q:'Why should CERP hire you as a Field Assistant?',opts:['Because you need field experience for your personal career development only','Because you are organized, dependable, cooperative, and committed to supporting the field team\'s success so that accurate data is collected effectively throughout the project','Because you live closest to the field area','Because you already know all the survey answers'],ans:1}
+];
+
+/* ═══════════════════════════════════════════
+   MCQ LOGIC — 4 ROLES
+═══════════════════════════════════════════ */
+let mcqRole = 'enum';
+let mcqState = {};
+
+function getMcqQs(r) {
+  if (r==='enum') return enumMcqs;
+  if (r==='sup')  return supMcqs;
+  if (r==='dc')   return dcMcqs;
+  if (r==='fa')   return faMcqs;
+  return enumMcqs;
+}
+
+function switchMcqRole(r, el) {
+  mcqRole = r;
+  document.querySelectorAll('.mcq-role-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  mcqState = {};
+  renderMcq();
+}
+
+function resetMcq() {
+  mcqState = {};
+  renderMcq();
+}
+
+function chooseMcqOption(qIdx, optIdx) {
+  const id = mcqRole + '-' + qIdx;
+  if (mcqState[id]) return;
+  const qs = getMcqQs(mcqRole);
+  const correct = qs[qIdx].ans === optIdx;
+  mcqState[id] = { chosen: optIdx, correct };
+  updateMcqCard(qIdx);
+  updateMcqStats();
+}
+
+function updateMcqCard(qIdx) {
+  const id = mcqRole + '-' + qIdx;
+  const state = mcqState[id];
+  if (!state) return;
+  const qs = getMcqQs(mcqRole);
+  const q = qs[qIdx];
+  q.opts.forEach((opt, oi) => {
+    const el = document.getElementById('opt-' + id + '-' + oi);
+    if (!el) return;
+    el.classList.add('locked');
+    if (oi === q.ans) el.classList.add('correct');
+    else if (oi === state.chosen && !state.correct) el.classList.add('wrong');
+  });
+  const card = document.getElementById('mcq-card-' + id);
+  if (card) {
+    card.classList.add('answered');
+    let tag = card.querySelector('.mcq-result-tag');
+    if (!tag) { tag = document.createElement('div'); card.appendChild(tag); }
+    tag.className = 'mcq-result-tag ' + (state.correct ? 'ok' : 'bad');
+    tag.textContent = state.correct ? '✓ Correct!' : '✗ Wrong — see correct answer highlighted in green';
+  }
+}
+
+function updateMcqStats() {
+  const qs = getMcqQs(mcqRole);
+  const total = qs.length;
+  const answered = Object.keys(mcqState).filter(k => k.startsWith(mcqRole+'-')).length;
+  const correct = Object.keys(mcqState).filter(k => k.startsWith(mcqRole+'-') && mcqState[k].correct).length;
+  const wrong = answered - correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('mst-total').textContent = total;
+  document.getElementById('mst-correct').textContent = correct;
+  document.getElementById('mst-wrong').textContent = wrong;
+  document.getElementById('mst-score').textContent = pct + '%';
+  document.getElementById('mcq-prog').style.width = Math.round((answered / total) * 100) + '%';
+}
+
+function renderMcq() {
+  const qs = getMcqQs(mcqRole);
+  const letters = ['A','B','C','D'];
+  const list = document.getElementById('mcq-list');
+  list.innerHTML = qs.map((q, qi) => {
+    const id = mcqRole + '-' + qi;
+    const state = mcqState[id];
+    const optsHtml = q.opts.map((opt, oi) => {
+      let cls = 'mcq-opt';
+      if (state) {
+        cls += ' locked';
+        if (oi === q.ans) cls += ' correct';
+        else if (state.chosen === oi && !state.correct) cls += ' wrong';
+      }
+      return `<div class="${cls}" id="opt-${id}-${oi}" onclick="chooseMcqOption(${qi},${oi})">
+        <span class="opt-letter">${letters[oi]}</span>
+        <span>${opt}</span>
+      </div>`;
+    }).join('');
+    let resultTag = '';
+    if (state) {
+      resultTag = `<div class="mcq-result-tag ${state.correct?'ok':'bad'}">${state.correct?'✓ Correct!':'✗ Wrong — correct answer highlighted in green'}</div>`;
+    }
+    return `<div class="mcq-card${state?' answered':''}" id="mcq-card-${id}">
+      <div class="mcq-q-row">
+        <span class="mcq-q-num">Q${qi+1}</span>
+        <span class="mcq-q-text">${q.q}</span>
+      </div>
+      <div class="mcq-options">${optsHtml}</div>
+      ${resultTag}
+    </div>`;
+  }).join('');
+  updateMcqStats();
+}
+
+// init
+render();
+renderMcq();
+</script>
+</body>
+</html>
