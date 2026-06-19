@@ -1,0 +1,408 @@
+[
+  {
+    "id": "c25601393343872b",
+    "type": "tab",
+    "label": "⚙️ Config-Driven Setup",
+    "disabled": false,
+    "info": "Auto-watches config.json every 3 seconds.\nWhen a change is detected:\n  • If projectName changed → RENAMES folder, DB file, SQLite table, backup files\n  • Always → ensures dirs exist, syncs columns, updates flows.json + FTP creds + .dat files\n\nPrevious state is stored in global context so renames work correctly."
+  },
+  {
+    "id": "e5a3343847c6107f",
+    "type": "comment",
+    "z": "c25601393343872b",
+    "name": "Auto-watches config.json every 3 s — renames existing resources when projectName changes",
+    "info": "Previous applied config is stored in global 'lastAppliedConfig'.\nWhen projectName changes the flow renames (not recreates) everything.",
+    "x": 460,
+    "y": 40,
+    "wires": []
+  },
+  {
+    "id": "dee5f2d87399c6f8",
+    "type": "inject",
+    "z": "c25601393343872b",
+    "name": "⏱ Watch every 3 s",
+    "props": [
+      {
+        "p": "configPath",
+        "v": "C:/Users/Azhar/OneDrive/Desktop/flow/config.json",
+        "vt": "str"
+      }
+    ],
+    "repeat": "3",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.5,
+    "x": 160,
+    "y": 100,
+    "wires": [
+      [
+        "57319efb73208d4b"
+      ]
+    ]
+  },
+  {
+    "id": "57319efb73208d4b",
+    "type": "function",
+    "z": "c25601393343872b",
+    "name": "Detect Change (mtime)",
+    "func": "var fs         = global.get('fs');\nvar configPath = msg.configPath || 'C:/Users/Azhar/OneDrive/Desktop/flow/config.json';\n\nif (!fs) { node.error('fs not in global context — check settings.js', msg); return null; }\n\nvar stat;\ntry { stat = fs.statSync(configPath); }\ncatch (e) { node.status({ fill:'red', shape:'ring', text:'File not found' }); return null; }\n\nvar currentMtime  = stat.mtimeMs;\nvar previousMtime = global.get('configMtime') || 0;\n\nif (currentMtime === previousMtime) return null;   // silent — no change\n\nglobal.set('configMtime', currentMtime);\nvar ts = new Date(currentMtime).toLocaleTimeString();\nnode.status({ fill:'yellow', shape:'dot', text:'Change @ ' + ts + ' — running...' });\nnode.log('[Watcher] config.json changed @ ' + ts);\n\nmsg.configPath = configPath;\nmsg.log        = ['⚡ Change detected @ ' + ts];\nreturn msg;\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 390,
+    "y": 100,
+    "wires": [
+      [
+        "dc55e91dcfd1486e"
+      ]
+    ]
+  },
+  {
+    "id": "dc55e91dcfd1486e",
+    "type": "function",
+    "z": "c25601393343872b",
+    "name": "① Read & Parse config.json",
+    "func": "var fs = global.get('fs');\nvar configPath = msg.configPath;\nvar log = msg.log || [];\n\n// ─── Parse config.json ────────────────────────────────────────────\ntry {\n    var raw = fs.readFileSync(configPath, 'utf8');\n    var cfg = JSON.parse(raw);\n} catch (e) {\n    node.error('Cannot read/parse config.json: ' + e.message, msg);\n    node.status({ fill:'red', shape:'dot', text:'Parse error: ' + e.message });\n    return null;\n}\n\nif (!cfg.projectName) { node.error('config.json: \"projectName\" required', msg); return null; }\nif (!Array.isArray(cfg.columns) || !cfg.columns.length) { node.error('config.json: \"columns\" required', msg); return null; }\n\n// Check for duplicates\nvar seenCol = {};\nfor (var i = 0; i < cfg.columns.length; i++) {\n    var cname = cfg.columns[i].name;\n    if (seenCol[cname]) {\n        node.error('Duplicate column found in config.json: ' + cname, msg);\n        node.status({ fill:'red', shape:'dot', text:'Duplicate: ' + cname });\n        return null;\n    }\n    seenCol[cname] = true;\n}\n\n// ─── Derive all paths ─────────────────────────────────────────────\nvar p    = cfg.projectName;\nvar base = cfg.baseDir || 'D:/';\nif (!base.endsWith('/') && !base.endsWith('\\\\')) base += '/';\n\ncfg.dbDir     = cfg.dbDir    || (base + p + '/');\ncfg.dbName    = cfg.dbName   || (p + '.db');\ncfg.dbTable   = cfg.dbTable  || p;\ncfg.dbPath    = cfg.dbDir + cfg.dbName;\ncfg.backupDir = cfg.backupDir || (cfg.dbDir + 'Backup_Data/Frequancy_Files/');\ncfg.datFile   = cfg.datFile   || (cfg.dbDir + p + '.dat');\ncfg.mainBackupFile = cfg.mainBackupFile || (cfg.dbDir + 'Backup_Data/MasterBackup.dat');\n\ncfg.stationName = (cfg.toa5 && cfg.toa5.stationName) ? cfg.toa5.stationName : p;\n\nif (cfg.toa5 && Array.isArray(cfg.toa5.frequencies)) {\n    cfg.backupFiles = cfg.toa5.frequencies.map(function(f) {\n        return {\n            seconds: f.seconds,\n            fileName: cfg.stationName + '-' + f.name.trim() + '.dat',\n            suffix: f.stationSuffix\n        };\n    });\n} else if (!Array.isArray(cfg.backupFiles)) {\n    cfg.backupFiles = [\n        { seconds: 60,  fileName: cfg.stationName + '-1_min.dat', suffix: '1minute'  },\n        { seconds: 300, fileName: cfg.stationName + '-5_min.dat', suffix: '5minute'  },\n        { seconds: 600, fileName: cfg.stationName + '-10_min.dat', suffix: '10minute' }\n    ];\n}\n\ncfg.nodeRedFlowsFile = cfg.nodeRedFlowsFile || 'C:/Users/Azhar/.node-red/flows.json';\ncfg.nodeRedCredFile  = cfg.nodeRedCredFile  || 'C:/Users/Azhar/.node-red/flows_cred.json';\ncfg.ftpNodeId        = (cfg.ftp && cfg.ftp.nodeId) ? cfg.ftp.nodeId : 'ftp_config_server';\n\n// ─── Build TOA5 header ────────────────────────────────────────────\nvar sn   = cfg.stationName;\ncfg.hdr2 = cfg.columns.map(function(c){ return '\"'+c.name+'\"'; }).join(',');\ncfg.hdr3 = cfg.columns.map(function(c){ return '\"'+(c.unit||'')+'\"'; }).join(',');\ncfg.hdr4 = cfg.columns.map(function(c){ return '\"'+(c.sampling||'')+'\"'; }).join(',');\n\n// ─── Load previous config from global context ─────────────────────\nvar prevConfig = global.get('lastAppliedConfig') || null;\n\nlog.push('✓ Parsed: ' + p + ' (' + cfg.columns.length + ' cols)');\nif (prevConfig) log.push('  Previous: ' + prevConfig.projectName);\nnode.status({ fill:'blue', shape:'dot', text:'Parsed: ' + p });\n\nmsg.config     = cfg;\nmsg.prevConfig = prevConfig;\nmsg.log        = log;\nreturn msg;\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 630,
+    "y": 100,
+    "wires": [
+      [
+        "a28f2abd52685dfb"
+      ]
+    ]
+  },
+  {
+    "id": "a28f2abd52685dfb",
+    "type": "function",
+    "z": "c25601393343872b",
+    "name": "② Rename (if needed) + Create Dirs + SQLite",
+    "func": "var fs      = global.get('fs');\nvar sqlite3 = global.get('sqlite3');\nvar cfg     = msg.config;\nvar prev    = msg.prevConfig;\nvar log     = msg.log || [];\n\nif (!sqlite3) { node.error('sqlite3 not in global context — check settings.js', msg); return null; }\n\n// ═══════════════════════════════════════════════════════════════════\n// PART A: Detect & handle all renames independently\n// ═══════════════════════════════════════════════════════════════════\nvar renameTable = null;\nvar renameCols  = [];\nvar dropCols    = [];\n\nif (prev) {\n    var dirChanged   = prev.dbDir   && prev.dbDir   !== cfg.dbDir;\n    var nameChanged  = prev.dbPath  && prev.dbPath  !== cfg.dbPath;\n    var tableChanged = prev.dbTable && prev.dbTable !== cfg.dbTable;\n    var projChanged  = prev.projectName && prev.projectName !== cfg.projectName;\n\n    // ── 1. Rename project folder ──────────────────────────────────\n    if (dirChanged) {\n        if (fs.existsSync(prev.dbDir) && !fs.existsSync(cfg.dbDir)) {\n            try {\n                fs.renameSync(prev.dbDir, cfg.dbDir);\n                log.push('✓ Folder renamed: ' + prev.dbDir + ' → ' + cfg.dbDir);\n            } catch (e) { log.push('✗ Folder rename: ' + e.message); }\n        } else if (fs.existsSync(cfg.dbDir)) {\n            log.push('  Target folder already exists: ' + cfg.dbDir);\n        }\n    }\n\n    // ── 2. Rename DB file ─────────────────────────────────────────\n    if (nameChanged) {\n        var oldDbLocation = dirChanged\n            ? (cfg.dbDir + (prev.dbName || (prev.projectName + '.db')))\n            : prev.dbPath;\n        if (fs.existsSync(oldDbLocation) && !fs.existsSync(cfg.dbPath)) {\n            try {\n                fs.renameSync(oldDbLocation, cfg.dbPath);\n                log.push('✓ DB file renamed: ' + (prev.dbName||'old') + ' → ' + cfg.dbName);\n            } catch (e) { log.push('✗ DB file rename: ' + e.message); }\n        } else if (fs.existsSync(cfg.dbPath)) {\n            log.push('  DB target already exists: ' + cfg.dbPath);\n        }\n    }\n\n    // ── 3. Rename .dat file ───────────────────────────────────────\n    if (projChanged || dirChanged) {\n        var oldDatName = (prev.projectName || cfg.projectName) + '.dat';\n        var oldDatLoc  = dirChanged ? (cfg.dbDir + oldDatName) : (prev.dbDir + oldDatName);\n        if (fs.existsSync(oldDatLoc) && oldDatLoc !== cfg.datFile) {\n            try {\n                fs.renameSync(oldDatLoc, cfg.datFile);\n                log.push('✓ .dat renamed → ' + cfg.datFile.split('/').pop());\n            } catch (e) { log.push('✗ .dat rename: ' + e.message); }\n        }\n    }\n\n    // ── 4. Rename backup files ────────────────────────────────────\n    var scanDir = fs.existsSync(cfg.backupDir) ? cfg.backupDir : (prev.backupDir || '');\n    if (scanDir && fs.existsSync(scanDir)) {\n        if (prev.backupFiles && cfg.backupFiles) {\n            cfg.backupFiles.forEach(function(bf) {\n                var prevBf = prev.backupFiles.find(function(pb) { return pb.seconds === bf.seconds; });\n                if (prevBf && prevBf.fileName !== bf.fileName) {\n                    var oldPath = scanDir + prevBf.fileName;\n                    var newPath = scanDir + bf.fileName;\n                    if (fs.existsSync(oldPath) && !fs.existsSync(newPath)) {\n                        try {\n                            fs.renameSync(oldPath, newPath);\n                            log.push('✓ Backup renamed: ' + prevBf.fileName + ' → ' + bf.fileName);\n                            \n                            // Rename on FTP natively\n                            if (cfg.ftp && typeof FtpClient !== 'undefined') {\n                                var rDir = cfg.ftp.remoteDir || '/';\n                                if (!rDir.endsWith('/')) rDir += '/';\n                                var oldRemote = rDir + prevBf.fileName;\n                                var newRemote = rDir + bf.fileName;\n                                \n                                var c = new FtpClient();\n                                c.on('ready', function() {\n                                    c.rename(oldRemote, newRemote, function(err) {\n                                        if (err) node.warn('FTP rename err: ' + err.message);\n                                        else node.warn('✓ FTP renamed: ' + prevBf.fileName + ' to ' + bf.fileName);\n                                        c.end();\n                                    });\n                                });\n                                c.on('error', function(err) {\n                                    node.warn('FTP connection err: ' + err.message);\n                                });\n                                c.connect({\n                                    host: cfg.ftp.host,\n                                    port: cfg.ftp.port || 21,\n                                    user: cfg.ftp.user,\n                                    password: cfg.ftp.password,\n                                    keepalive: 10000,\n                                    pasvTimeout: 10000\n                                });\n                            }\n                        } catch (e) { log.push('✗ Backup rename: ' + e.message); }\n                    }\n                }\n            });\n        }\n    }\n\n    // ── 5. Flag SQLite table rename ───────────────────────────────\n    if (tableChanged) {\n        renameTable = { from: prev.dbTable, to: cfg.dbTable };\n        log.push('🔄 Table rename: \"' + prev.dbTable + '\" → \"' + cfg.dbTable + '\"');\n    }\n\n    // ── 6. Detect column renames and drops ──\n    if (prev.columns && Array.isArray(prev.columns)) {\n        var oldNames = prev.columns.map(function(c) { return c.name; });\n        var newNames = cfg.columns.map(function(c) { return c.name; });\n\n        var minLen = Math.min(oldNames.length, newNames.length);\n        for (var i = 0; i < minLen; i++) {\n            var oldN = oldNames[i];\n            var newN = newNames[i];\n            if (oldN !== newN) {\n                if (newNames.indexOf(oldN) === -1 && oldNames.indexOf(newN) === -1) {\n                    renameCols.push({ from: oldN, to: newN });\n                    log.push('🔄 Column rename pending: \"' + oldN + '\" → \"' + newN + '\"');\n                    oldNames[i] = null;\n                    newNames[i] = null;\n                }\n            }\n        }\n\n        for (var i = 0; i < oldNames.length; i++) {\n            if (oldNames[i] !== null && newNames.indexOf(oldNames[i]) === -1) {\n                dropCols.push(oldNames[i]);\n                log.push('🗑️ Column drop pending: \"' + oldNames[i] + '\"');\n            }\n        }\n    }\n}\n\n// ═══════════════════════════════════════════════════════════════════\n// PART B: Ensure directories exist\n// ═══════════════════════════════════════════════════════════════════\nfunction ensureDir(d) {\n    try   { fs.mkdirSync(d, { recursive: true }); }\n    catch (e) { log.push('✗ mkdirSync ' + d + ': ' + e.message); }\n}\nensureDir(cfg.dbDir);\nensureDir(cfg.backupDir);\n\n// ═══════════════════════════════════════════════════════════════════\n// PART C: Open SQLite, apply renames, CREATE TABLE, sync new cols\n// ═══════════════════════════════════════════════════════════════════\nvar colDefs   = cfg.columns.map(function(c){ return '    \"'+c.name+'\" '+(c.type||'TEXT'); }).join(',\\n');\nvar createSQL = 'CREATE TABLE IF NOT EXISTS \"'+cfg.dbTable+'\" (\\n'+colDefs+'\\n);';\nvar pragmaSQL = 'PRAGMA table_info(\"'+cfg.dbTable+'\");';\n\nvar sqlite3v = sqlite3.verbose();\nvar db = new sqlite3v.Database(\n    cfg.dbPath,\n    sqlite3v.OPEN_READWRITE | sqlite3v.OPEN_CREATE,\n    function(openErr) {\n        if (openErr) { node.error('DB open failed: ' + openErr.message, msg); return; }\n        log.push('✓ DB: ' + cfg.dbPath);\n\n        // Step 1: rename table if project was renamed\n        function doTableRename(cb) {\n            if (!renameTable) return cb();\n            db.run('ALTER TABLE \"'+renameTable.from+'\" RENAME TO \"'+renameTable.to+'\";', function(err) {\n                if (err) log.push('  Table rename skipped: ' + err.message);\n                else     log.push('✓ Table renamed: \"'+renameTable.from+'\" → \"'+renameTable.to+'\"');\n                cb();\n            });\n        }\n\n        // Step 1.5: rename columns\n        function doColRenames(cb) {\n            if (!renameCols.length) return cb();\n            // ALTER TABLE RENAME COLUMN is supported in newer SQLite versions (3.25.0+)\n            var i = 0;\n            function next() {\n                if (i >= renameCols.length) return cb();\n                var r = renameCols[i++];\n                db.run('ALTER TABLE \"'+cfg.dbTable+'\" RENAME COLUMN \"'+r.from+'\" TO \"'+r.to+'\";', function(err) {\n                    if (err) log.push('✗ Col rename \"'+r.from+'\": ' + err.message);\n                    else     log.push('✓ Col renamed: \"'+r.from+'\" → \"'+r.to+'\"');\n                    next();\n                });\n            }\n            next();\n        }\n\n\n        // Step 1.8: drop columns\n        function doColDrops(cb) {\n            if (!dropCols.length) return cb();\n            var i = 0;\n            function next() {\n                if (i >= dropCols.length) return cb();\n                var c = dropCols[i++];\n                db.run('ALTER TABLE \"'+cfg.dbTable+'\" DROP COLUMN \"'+c+'\";', function(err) {\n                    if (err) log.push('✗ Col drop \"'+c+'\": ' + err.message);\n                    else     log.push('✓ Col dropped: \"'+c+'\"');\n                    next();\n                });\n            }\n            next();\n        }\n\n        // Step 2: CREATE TABLE IF NOT EXISTS\n        function doCreate(cb) {\n            db.run(createSQL, function(err) {\n                if (err) { db.close(); node.error('CREATE TABLE: ' + err.message, msg); return; }\n                log.push('✓ Table \"'+cfg.dbTable+'\" ready');\n                cb();\n            });\n        }\n\n        // Step 3: Add new columns (if any weren't caught by rename)\n        function doAlter(cb) {\n            db.all(pragmaSQL, function(err, rows) {\n                if (err) { log.push('✗ PRAGMA: ' + err.message); return cb(); }\n                var existing = rows.map(function(r){ return r.name; });\n                var alters   = [];\n                cfg.columns.forEach(function(c) {\n                    if (existing.indexOf(c.name) === -1)\n                        alters.push('ALTER TABLE \"'+cfg.dbTable+'\" ADD COLUMN \"'+c.name+'\" '+(c.type||'TEXT')+';');\n                });\n                if (!alters.length) { log.push('✓ Schema up to date'); return cb(); }\n                var i = 0;\n                function next() {\n                    if (i >= alters.length) {\n                        log.push('✓ Added ' + alters.length + ' new column(s)');\n                        return cb();\n                    }\n                    db.run(alters[i++], function(e) {\n                        if (e) log.push('✗ ALTER: ' + e.message);\n                        next();\n                    });\n                }\n                next();\n            });\n        }\n\n        doTableRename(function() {\n            doColRenames(function() {\n                doColDrops(function() {\n                    doCreate(function() {\n                    doAlter(function() {\n                        db.close();\n                        msg.log = log;\n                        node.send(msg);\n                        });\n                    });\n                });\n            });\n        });\n    }\n);\n\nreturn null;  // async\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [
+      {
+        "var": "FtpClient",
+        "module": "ftp"
+      }
+    ],
+    "x": 920,
+    "y": 100,
+    "wires": [
+      [
+        "a4a92111eb88fe7c"
+      ]
+    ]
+  },
+  {
+    "id": "a4a92111eb88fe7c",
+    "type": "function",
+    "z": "c25601393343872b",
+    "name": "③ Update flows.json + FTP Creds + .dat Files",
+    "func": "var fs  = global.get('fs');\nvar cfg = msg.config;\nvar log = msg.log || [];\n\n// ═══════════════════════════════════════════\n// A: Update flows.json\n// ═══════════════════════════════════════════\ntry {\n    var raw     = fs.readFileSync(cfg.nodeRedFlowsFile, 'utf8');\n    var flows   = JSON.parse(raw);\n    var changed = false;\n\n    flows.forEach(function(n) {\n        // sqlitedb config nodes\n        if (n.type === 'sqlitedb' && n.db !== cfg.dbPath) {\n            log.push('sqlitedb [' + (n.name||n.id) + ']: → ' + cfg.dbPath);\n            n.db   = cfg.dbPath;\n            n.mode = n.mode || 'RWC';\n            changed = true;\n        }\n        // FTP config node\n        if (cfg.ftp && n.id === cfg.ftpNodeId && n.type === 'ftp') {\n            var f = cfg.ftp;\n            if (f.host !== undefined && n.host !== f.host) { n.host = f.host; log.push('FTP host → '+f.host); changed = true; }\n            if (f.port !== undefined && String(n.port) !== String(f.port)) { n.port = String(f.port); changed = true; }\n            if (f.user !== undefined && n.user !== f.user) { n.user = f.user; log.push('FTP user → '+f.user); changed = true; }\n            if (f.name !== undefined && n.name !== f.name) { n.name = f.name; changed = true; }\n        }\n    });\n\n    if (changed) {\n        var bak = cfg.nodeRedFlowsFile + '.' + Date.now() + '.bak';\n        fs.copyFileSync(cfg.nodeRedFlowsFile, bak);\n        fs.writeFileSync(cfg.nodeRedFlowsFile, JSON.stringify(flows, null, 4), 'utf8');\n        log.push('✓ flows.json updated (backup created)');\n        log.push('⚠️  Restart Node-RED to activate new DB path');\n    } else {\n        log.push('✓ flows.json — no changes needed');\n    }\n} catch (e) {\n    log.push('✗ flows.json: ' + e.message);\n}\n\n// ═══════════════════════════════════════════\n// B: FTP password\n// ═══════════════════════════════════════════\ntry {\n    if (cfg.ftp && cfg.ftp.password) {\n        var creds = {};\n        creds[cfg.ftpNodeId] = { password: cfg.ftp.password };\n        fs.writeFileSync(cfg.nodeRedCredFile, JSON.stringify(creds, null, 4), 'utf8');\n        log.push('✓ FTP password saved');\n    }\n} catch (e) { log.push('✗ flows_cred.json: ' + e.message); }\n\n// ═══════════════════════════════════════════\n// C: Create .dat files if still missing\n// ═══════════════════════════════════════════\nfunction getHeader(suffix) {\n    var s = cfg.stationName + (suffix ? '-' + suffix : '');\n    var hdr1 = '\"TOA5\",\"'+s+'\",\"'+s+'\",\"'+s+'\",\"'+s+'\",\"'+s+'\",\"'+s+'\",\"'+s+'\"';\n    return hdr1 + '\\n' + cfg.hdr2 + '\\n' + cfg.hdr3 + '\\n' + cfg.hdr4 + '\\n';\n}\n\nfunction updateDatHeaders(p, suffix) {\n    try {\n        var header = getHeader(suffix);\n        if (!fs.existsSync(p)) {\n            fs.writeFileSync(p, header, 'utf8');\n            log.push('✓ Created .dat: ' + p.split('/').pop());\n        } else {\n            var content = fs.readFileSync(p, 'utf8');\n            var lines = content.replace(/\\r\\n/g, '\\n').split('\\n');\n            if (lines.length >= 4) {\n                var oldHdr = lines.slice(0, 4).join('\\n') + '\\n';\n                var newHdrNorm = header.replace(/\\r\\n/g, '\\n');\n                if (oldHdr !== newHdrNorm) {\n                    var dataLines = lines.slice(4).join('\\n');\n                    fs.writeFileSync(p, newHdrNorm + dataLines, 'utf8');\n                    log.push('✓ Updated headers: ' + p.split('/').pop());\n                }\n            }\n        }\n    } catch (e) { log.push('✗ .dat: ' + p + ' — ' + e.message); }\n}\n\nupdateDatHeaders(cfg.datFile, '');\nif (cfg.mainBackupFile) {\n    var mainDir = cfg.mainBackupFile.substring(0, cfg.mainBackupFile.lastIndexOf('/'));\n    try { fs.mkdirSync(mainDir, { recursive: true }); } catch(e) {}\n    updateDatHeaders(cfg.mainBackupFile, 'Master');\n}\ncfg.backupFiles.forEach(function(bf) {\n    updateDatHeaders(cfg.backupDir + bf.fileName, bf.suffix || '');\n});\n\n// ═══════════════════════════════════════════\n// D: Save applied config to global context\n//    (needed for rename detection on next change)\n// ═══════════════════════════════════════════\nglobal.set('lastAppliedConfig', {\n    projectName: cfg.projectName,\n    dbDir:       cfg.dbDir,\n    dbName:      cfg.dbName,\n    dbTable:     cfg.dbTable,\n    dbPath:      cfg.dbPath,\n    backupDir:   cfg.backupDir,\n    datFile:     cfg.datFile,\n    mainBackupFile: cfg.mainBackupFile,\n    backupFiles: cfg.backupFiles,\n    ftp:         cfg.ftp,\n    hdr2:        cfg.hdr2,\n    hdr3:        cfg.hdr3,\n    hdr4:        cfg.hdr4,\n    stationName: cfg.stationName,\n    columns:     cfg.columns\n});\nlog.push('✓ State saved to global context');\n\n// ═══════════════════════════════════════════\n// OUTPUT\n// ═══════════════════════════════════════════\nvar errors   = log.filter(function(l){ return l.charAt(0) === '✗'; }).length;\nvar warnings = log.filter(function(l){ return l.charAt(0) === '⚠'; }).length;\nvar ts       = new Date().toLocaleTimeString();\n\nmsg.payload = {\n    status:      errors ? 'PARTIAL' : 'SUCCESS',\n    appliedAt:   ts,\n    projectName: cfg.projectName,\n    dbPath:      cfg.dbPath,\n    dbTable:     cfg.dbTable,\n    columns:     cfg.columns.length,\n    errors:      errors,\n    warnings:    warnings,\n    log:         log\n};\n\nnode.status({\n    fill:  errors ? 'red' : (warnings ? 'yellow' : 'green'),\n    shape: 'dot',\n    text:  (errors ? '✗ '+errors+' err' : '✓ Applied') + ' @ ' + ts + ' | ' + cfg.projectName\n});\n\nreturn msg;\n",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1210,
+    "y": 100,
+    "wires": [
+      [
+        "e0e21e29ee4b6a75"
+      ]
+    ]
+  },
+  {
+    "id": "e0e21e29ee4b6a75",
+    "type": "debug",
+    "z": "c25601393343872b",
+    "name": "✅ Result",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "payload.status",
+    "statusType": "auto",
+    "x": 1440,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "f8f8fb751e7f13f2",
+    "type": "catch",
+    "z": "c25601393343872b",
+    "name": "Catch Errors",
+    "scope": null,
+    "uncaught": false,
+    "x": 920,
+    "y": 220,
+    "wires": [
+      [
+        "568e5094b63fa7b5"
+      ]
+    ]
+  },
+  {
+    "id": "568e5094b63fa7b5",
+    "type": "debug",
+    "z": "c25601393343872b",
+    "name": "❌ Error",
+    "active": true,
+    "tosidebar": true,
+    "console": true,
+    "tostatus": false,
+    "complete": "true",
+    "targetType": "full",
+    "x": 1120,
+    "y": 220,
+    "wires": []
+  },
+  {
+    "id": "b6baf15aecc31494",
+    "type": "inject",
+    "z": "c25601393343872b",
+    "name": "⏱ 1 Min",
+    "props": [
+      {
+        "p": "topic",
+        "v": "60",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "60",
+    "payload": "",
+    "payloadType": "date",
+    "x": 160,
+    "y": 300,
+    "wires": [
+      [
+        "apply_freq_node"
+      ]
+    ]
+  },
+  {
+    "id": "5ac75d0d9d631968",
+    "type": "inject",
+    "z": "c25601393343872b",
+    "name": "⏱ 10 Min",
+    "props": [
+      {
+        "p": "topic",
+        "v": "600",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "600",
+    "payload": "",
+    "payloadType": "date",
+    "x": 160,
+    "y": 360,
+    "wires": [
+      [
+        "apply_freq_node"
+      ]
+    ]
+  },
+  {
+    "id": "25891fe7e87d5f61",
+    "type": "inject",
+    "z": "c25601393343872b",
+    "name": "⏱ 60 Min",
+    "props": [
+      {
+        "p": "topic",
+        "v": "3600",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "3600",
+    "payload": "",
+    "payloadType": "date",
+    "x": 160,
+    "y": 420,
+    "wires": [
+      [
+        "apply_freq_node"
+      ]
+    ]
+  },
+  {
+    "id": "0e6e565e202a2073",
+    "type": "function",
+    "z": "c25601393343872b",
+    "name": "🎲 Generate & Insert (DB + .dat)",
+    "func": "var sqlite3 = global.get('sqlite3');\nvar fs = global.get('fs');\nvar cfg = global.get('lastAppliedConfig');\nvar freqSeconds = parseInt(msg.topic) || 60;\n\nif (!cfg || !sqlite3 || !fs) {\n    node.status({fill:'red', shape:'ring', text:'Config/FS not ready'});\n    return null;\n}\n\nvar cols = [];\nvar vals = [];\nvar params = [];\nvar csvLineArr = [];\n\nvar recordCount = global.get('recordCount') || 0;\nrecordCount++;\nglobal.set('recordCount', recordCount);\n\ncfg.columns.forEach(function(c) {\n    cols.push('\"' + c.name + '\"');\n    \n    var upper = c.name.toUpperCase();\n    var val;\n    if (upper === 'TIMESTAMP') {\n        var d = new Date();\n        var yyyy = d.getFullYear();\n        var mon = String(d.getMonth() + 1).padStart(2, '0');\n        var dd = String(d.getDate()).padStart(2, '0');\n        var hh = String(d.getHours()).padStart(2, '0');\n        var mi = String(d.getMinutes()).padStart(2, '0');\n        val = yyyy + '-' + mon + '-' + dd + ' ' + hh + ':' + mi + ':00';\n        csvLineArr.push('\"' + val + '\"');\n    } else if (upper.indexOf('RECORD') > -1) {\n        val = recordCount;\n        csvLineArr.push(val);\n    } else if (c.type === 'REAL') {\n        val = +(Math.random() * 500).toFixed(2);\n        csvLineArr.push(val);\n    } else if (c.type === 'INTEGER') {\n        val = Math.floor(Math.random() * 100);\n        csvLineArr.push(val);\n    } else {\n        // The user asked to keep numbers instead of Normal/OK for TEXT columns\n        val = Math.floor(Math.random() * 10000000000).toString();\n        csvLineArr.push('\"' + val + '\"');\n    }\n    params.push(val);\n    vals.push('?');\n});\n\nvar sql = 'INSERT INTO \"' + cfg.dbTable + '\" (' + cols.join(',') + ') VALUES (' + vals.join(',') + ');';\n\n// Robustness: ensure folders exist just in case they were manually deleted\ntry { fs.mkdirSync(cfg.dbDir, { recursive: true }); } catch(e) {}\ntry { fs.mkdirSync(cfg.backupDir, { recursive: true }); } catch(e) {}\nif (cfg.mainBackupFile) {\n    try { fs.mkdirSync(cfg.mainBackupFile.substring(0, cfg.mainBackupFile.lastIndexOf('/')), { recursive: true }); } catch(e) {}\n}\n\nvar db = new sqlite3.Database(cfg.dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, function(err) {\n    if (err) {\n        node.error('DB Open Error: ' + err.message, msg);\n        node.status({fill:'red', shape:'dot', text:'DB error'});\n        return;\n    }\n    db.run(sql, params, function(err) {\n        if (err) {\n            node.error('Insert Error: ' + err.message, msg);\n            node.status({fill:'red', shape:'dot', text:'Insert error'});\n        } else {\n            node.status({fill:'green', shape:'dot', text:'Inserted record ' + recordCount});\n            \n            var logMsg = 'Inserted 1 row into DB';\n            var backupFile = cfg.backupFiles.find(function(bf) { return bf.seconds === freqSeconds; });\n            if (backupFile) {\n                var datPath = cfg.backupDir + backupFile.fileName;\n                try {\n                    var csvStr = csvLineArr.join(',') + '\\n';\n                    fs.appendFileSync(datPath, csvStr, 'utf8');\n                    logMsg += ' & appended to ' + backupFile.fileName;\n                    \n                    // Prepare FTP upload\n                    if (!cfg.ftp) {\n                        try {\n                            var tmpCfg = JSON.parse(fs.readFileSync('C:/Users/Azhar/OneDrive/Desktop/flow/config.json', 'utf8'));\n                            cfg.ftp = tmpCfg.ftp;\n                        } catch(e) {}\n                    }\n                    if (cfg.ftp) {\n                        msg.localFilename = datPath;\n                        var rDir = cfg.ftp.remoteDir || '/';\n                        if (!rDir.endsWith('/')) rDir += '/';\n                        msg.filename = rDir + backupFile.fileName;\n                    }\n                } catch (e) {\n                    node.error('File Append Error: ' + e.message, msg);\n                }\n            }\n            \n            if (cfg.mainBackupFile) {\n                try {\n                    var csvStr = csvLineArr.join(',') + '\\n';\n                    fs.appendFileSync(cfg.mainBackupFile, csvStr, 'utf8');\n                    logMsg += ' & appended to MasterBackup';\n                } catch (e) {\n                    node.error('Master File Append Error: ' + e.message, msg);\n                }\n            }\n            \n            msg.payload = logMsg;\n            node.send(msg);\n        }\n        db.close();\n    });\n});\n\nreturn null;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 480,
+    "y": 360,
+    "wires": [
+      [
+        "556e663ead18b99f",
+        "fb3e7e92a4ede624"
+      ]
+    ]
+  },
+  {
+    "id": "556e663ead18b99f",
+    "type": "debug",
+    "z": "c25601393343872b",
+    "name": "✅ Random Insert",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "payload",
+    "statusType": "auto",
+    "x": 750,
+    "y": 360,
+    "wires": []
+  },
+  {
+    "id": "fb3e7e92a4ede624",
+    "type": "ftp in",
+    "z": "c25601393343872b",
+    "ftp": "ftp_config_server",
+    "operation": "put",
+    "filename": "",
+    "localFilename": "",
+    "name": "☁️ Upload to FTP",
+    "x": 750,
+    "y": 420,
+    "wires": [
+      [
+        "1b29c0a6482ba732"
+      ]
+    ]
+  },
+  {
+    "id": "1b29c0a6482ba732",
+    "type": "debug",
+    "z": "c25601393343872b",
+    "name": "FTP Result",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "payload",
+    "statusType": "auto",
+    "x": 950,
+    "y": 420,
+    "wires": []
+  },
+  {
+    "id": "ftp_config_server",
+    "type": "ftp",
+    "host": "cloud.buraq.com",
+    "port": "21",
+    "secure": true,
+    "secureOptions": {
+      "rejectUnauthorized": false
+    },
+    "user": "solar",
+    "connTimeout": "10000",
+    "pasvTimeout": "10000",
+    "keepalive": "10000"
+  },
+  {
+    "id": "9369f760933bab28",
+    "type": "global-config",
+    "env": [],
+    "modules": {
+      "node-red-contrib-ftp": "0.0.8"
+    }
+  },
+  {
+    "id": "apply_freq_node",
+    "type": "function",
+    "z": "c25601393343872b",
+    "name": "Apply Frequency",
+    "func": "var freq = parseInt(msg.topic);\nif (freq) {\n    global.set('activeFrequency', freq);\n    global.set('lastRun', Date.now());\n    node.status({fill:\"blue\", shape:\"dot\", text:\"Active: \" + freq + \"s\"});\n    return msg;\n}\nreturn null;",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 340,
+    "y": 360,
+    "wires": [
+      [
+        "0e6e565e202a2073"
+      ]
+    ]
+  },
+  {
+    "id": "base_tick_node",
+    "type": "inject",
+    "z": "c25601393343872b",
+    "name": "⏱ Base Tick",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "1",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 160,
+    "y": 480,
+    "wires": [
+      [
+        "check_interval_node"
+      ]
+    ]
+  },
+  {
+    "id": "check_interval_node",
+    "type": "function",
+    "z": "c25601393343872b",
+    "name": "Gate - Is It Time?",
+    "func": "var activeFreq = global.get('activeFrequency') || 60; // default 1 min\nvar lastRun = global.get('lastRun') || 0;\nvar now = Date.now();\n\nif (now - lastRun >= activeFreq * 1000) {\n    global.set('lastRun', now);\n    msg.topic = activeFreq.toString();\n    node.status({fill:\"green\", shape:\"dot\", text:\"Fired at \" + activeFreq + \"s\"});\n    return msg;\n} else {\n    var remaining = Math.ceil(activeFreq - (now - lastRun)/1000);\n    node.status({fill:\"grey\", shape:\"dot\", text:\"Next in \" + remaining + \"s | Freq: \" + activeFreq + \"s\"});\n    return null;\n}",
+    "outputs": 1,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 340,
+    "y": 480,
+    "wires": [
+      [
+        "0e6e565e202a2073"
+      ]
+    ]
+  }
+]
